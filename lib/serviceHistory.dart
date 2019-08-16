@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './database/employee.dart';
 import 'package:async/async.dart';
 import 'package:sqflite/sqflite.dart';
-import 'companyForm.dart';
+import 'customerForm.dart';
 
 class ServiceHistory extends StatefulWidget {
   @override
@@ -10,13 +10,18 @@ class ServiceHistory extends StatefulWidget {
 }
 
 class _ServiceHistoryState extends State<ServiceHistory> {
-  Future<List<Employee>> employee;
+  Future<List<Product>> product;
   var _currentUser;
-  Future<List<Employee>> employeeName;
-  TextEditingController controller = TextEditingController();
-  TextEditingController controller1 = TextEditingController();
-  String name;
-  String number;
+  TextEditingController controllerName = TextEditingController();
+  TextEditingController controllerDesc = TextEditingController();
+  TextEditingController controllerCost = TextEditingController();
+  TextEditingController controllerUnit = TextEditingController();
+  TextEditingController controllerQuantity = TextEditingController();
+  String productName;
+  String productDesc;
+  String cost;
+  String unit;
+  String quantity;
 
 /*  String _mobile;*/
   int curUserId;
@@ -38,14 +43,16 @@ class _ServiceHistoryState extends State<ServiceHistory> {
 
   refreshList() {
     setState(() {
-      employee = DbHelper.getEmployees();
+      product = DbHelper.getProduct();
     });
   }
 
   clearName() {
-    controller.text = '';
-    controller1.text = '';
-    controller.selection;
+    controllerName.text = '';
+    controllerDesc.text = '';
+    controllerCost.text = '';
+    controllerQuantity.text = '';
+    controllerUnit.text = '';
     _currentUser = null;
   }
 
@@ -54,21 +61,35 @@ class _ServiceHistoryState extends State<ServiceHistory> {
 /*      DbHelper.dropTable(employee);*/
       formKey.currentState.save();
       if (isUpdating) {
-        Employee e = Employee(curUserId, name, number);
+        Product e = Product(
+          curUserId,
+          productName,
+          productDesc,
+          cost,
+          unit,
+          quantity,
+        );
         DbHelper.update(e);
         setState(() {
           isUpdating = false;
         });
       } else {
-        Employee e = Employee(null, name, number);
-        DbHelper.save(e);
+        Product e = Product(
+          null,
+          productName,
+          productDesc,
+          cost,
+          unit,
+          quantity,
+        );
+        DbHelper.saveProduct(e);
       }
       clearName();
       refreshList();
     }
   }
 
-  String validateMobile(String value) {
+  /*String validateMobile(String value) {
     String patttern = r'(^(?:[0]9)?[0-9]{10,12}$)';
     RegExp regExp = new RegExp(patttern);
     if (value.length != 10) {
@@ -77,7 +98,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
       return 'Please enter valid mobile number';
     }
     return null;
-  }
+  }*/
 
   form() {
     return Form(
@@ -91,23 +112,41 @@ class _ServiceHistoryState extends State<ServiceHistory> {
           children: <Widget>[
             TextFormField(
               autofocus: true,
-              controller: controller,
+              controller: controllerName,
               keyboardType: TextInputType.text,
-              decoration: InputDecoration(labelText: 'Name'),
-              validator: (val) => val.length == 0 ? 'Enter Name' : null,
-              onSaved: (val) => name = val,
+              decoration: InputDecoration(labelText: 'Product Name'),
+              validator: (val) => val.length == 0 ? 'Enter Product Name' : null,
+              onSaved: (val) => productName = val,
             ),
             TextFormField(
-              maxLength: 10,
-              controller: controller1,
+              autofocus: true,
+              controller: controllerDesc,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(labelText: 'Product Decscribtion'),
+              validator: (val) =>
+                  val.length == 0 ? 'Enter Product Decscribtion' : null,
+              onSaved: (val) => productDesc = val,
+            ),
+            TextFormField(
+              controller: controllerCost,
               keyboardType: TextInputType.phone,
-              decoration: InputDecoration(labelText: 'Number'),
-              validator: validateMobile,
-              onSaved: (val) => number = val,
-              /*
-              onSaved: (String val) {
-                number = val;
-              },*/
+              decoration: InputDecoration(labelText: 'Product cost'),
+              validator: (val) => val.length == 0 ? 'Enter Product Name' : null,
+              onSaved: (val) => cost = val,
+            ),
+            TextFormField(
+              controller: controllerUnit,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(labelText: 'Product Unit'),
+              validator: (val) => val.length == 0 ? 'Enter Product Name' : null,
+              onSaved: (val) => unit = val,
+            ),
+            TextFormField(
+              controller: controllerQuantity,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(labelText: 'Product Quantity'),
+              validator: (val) => val.length == 0 ? 'Enter Product Name' : null,
+              onSaved: (val) => quantity = val,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -129,30 +168,31 @@ class _ServiceHistoryState extends State<ServiceHistory> {
                 )
               ],
             ),
-            FutureBuilder<List<Employee>>(
+            FutureBuilder<List<Product>>(
                 future: DbHelper.getUserModelData(),
                 builder: (BuildContext context,
-                    AsyncSnapshot<List<Employee>> snapshot) {
+                    AsyncSnapshot<List<Product>> snapshot) {
                   if (!snapshot.hasData) return CircularProgressIndicator();
-                  return DropdownButton<Employee>(
+                  return DropdownButton<Product>(
                     items: snapshot.data
-                        .map((employee) => DropdownMenuItem<Employee>(
-                              child: Text(employee.name),
-                              value: employee,
+                        .map((product) => DropdownMenuItem<Product>(
+                              child: Text(product.productName),
+                              value: product,
                             ))
                         .toList(),
-                    onChanged: (Employee itemValue) {
-                      controller.text = itemValue.name;
-                      controller1.text = itemValue.number;
+                    onChanged: (Product itemValue) {
+                      controllerName.text = itemValue.productName;
+                      controllerDesc.text = itemValue.productDesc;
                       _dropdownItemSelected(itemValue);
-                      setState(() {
-                        isUpdating = true;
-                        FlatButton(
-                          color: Colors.grey,
-                          onPressed: validate,
-                          child: Text(isUpdating ? 'Update' : 'Add'),
-                        );
-                      });
+
+                      /*setState(() {
+                          isUpdating = true;
+                          FlatButton(
+                            color: Colors.grey,
+                            onPressed: validate,
+                            child: Text(isUpdating ? 'Update' : 'Add'),
+                          );
+                        });*/
                     },
                     isExpanded: false,
                     //value: _currentUser,
@@ -162,9 +202,9 @@ class _ServiceHistoryState extends State<ServiceHistory> {
                   );
                 }),
             /*SizedBox(height: 20.0),
-            _currentUser != null
-                ? Text("Name: " + _currentUser.name)
-                : Text("No Name Selected"),*/
+              _currentUser != null
+                  ? Text("Name: " + _currentUser.name)
+                  : Text("No Name Selected"),*/
           ],
         ),
       ),
@@ -173,7 +213,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
 
   // ignore: non_constant_identifier_names
 
-  SingleChildScrollView dataTable(List<Employee> employee) {
+  SingleChildScrollView dataTable(List<Product> product) {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
@@ -181,68 +221,109 @@ class _ServiceHistoryState extends State<ServiceHistory> {
         child: DataTable(
           columns: [
             DataColumn(
-              label: Text('Name'),
+              label: Text('Product Name'),
             ),
             DataColumn(
-              label: Text('Number'),
+              label: Text('Product Desc'),
+            ),
+            DataColumn(
+              label: Text('Cost'),
+            ),
+            DataColumn(
+              label: Text('Unit'),
+            ),
+            DataColumn(
+              label: Text('Quantity'),
             ),
             DataColumn(
               label: Text('Delete'),
             ),
-            DataColumn(
-              label: Text('Price'),
-            )
           ],
-          rows: employee
+          rows: product
               .map(
-                (employee) => DataRow(cells: [
+                (product) => DataRow(cells: [
                   DataCell(
                     Text(
-                      employee.name,
+                      product.productName,
                     ),
                     onTap: () {
                       setState(() {
                         isUpdating = true;
-                        curUserId = employee.id;
+                        curUserId = product.id;
                       });
-                      controller.text = employee.name;
-                      controller1.text = employee.number;
+                      controllerName.text = product.productName;
+                      controllerDesc.text = product.productDesc;
+                      controllerUnit.text = product.unit;
+                      controllerQuantity.text = product.quantity;
+                      controllerCost.text = product.cost;
                     },
                     placeholder: false,
                   ),
                   DataCell(
-                    Text(employee.number),
+                    Text(product.productDesc),
                     onTap: () {
                       setState(() {
                         isUpdating = true;
-                        curUserId = employee.id;
+                        curUserId = product.id;
                       });
-                      controller.text = employee.name;
-                      controller1.text = employee.number;
+                      controllerName.text = product.productName;
+                      controllerDesc.text = product.productDesc;
+                      controllerUnit.text = product.unit;
+                      controllerQuantity.text = product.quantity;
+                      controllerCost.text = product.cost;
+                    },
+                  ),
+                  DataCell(
+                    Text(product.cost),
+                    onTap: () {
+                      setState(() {
+                        isUpdating = true;
+                        curUserId = product.id;
+                      });
+                      controllerName.text = product.productName;
+                      controllerDesc.text = product.productDesc;
+                      controllerUnit.text = product.unit;
+                      controllerQuantity.text = product.quantity;
+                      controllerCost.text = product.cost;
+                    },
+                  ),
+                  DataCell(
+                    Text(product.unit),
+                    onTap: () {
+                      setState(() {
+                        isUpdating = true;
+                        curUserId = product.id;
+                      });
+                      controllerName.text = product.productName;
+                      controllerDesc.text = product.productDesc;
+                      controllerUnit.text = product.unit;
+                      controllerQuantity.text = product.quantity;
+                      controllerCost.text = product.cost;
+                    },
+                  ),
+                  DataCell(
+                    Text(product.quantity),
+                    onTap: () {
+                      setState(() {
+                        isUpdating = true;
+                        curUserId = product.id;
+                      });
+                      controllerName.text = product.productName;
+                      controllerDesc.text = product.productDesc;
+                      controllerUnit.text = product.unit;
+                      controllerQuantity.text = product.quantity;
+                      controllerCost.text = product.cost;
                     },
                   ),
                   DataCell(
                     IconButton(
                       icon: Icon(Icons.delete),
                       onPressed: () {
-                        DbHelper.delete(employee.id);
+                        DbHelper.delete(product.id);
                         refreshList();
                       },
                     ),
                   ),
-                  DataCell(
-                    Text('Yogesh'),
-                  ),
-                  /*DataCell(IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      DbHelper.delete(employee.id);
-                      refreshList();
-                    },
-                  ),
-                  )*/
-                  /*DataCell(Text('')),
-              */
                 ]),
               )
               .toList(),
@@ -254,7 +335,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
   list() {
     return Expanded(
       child: FutureBuilder(
-          future: employee,
+          future: product,
           // ignore: missing_return
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -273,7 +354,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
     // TODO: implement build
     return Scaffold(
       appBar: new AppBar(
-        title: Text('Database'),
+        title: Text('Product Details'),
       ),
       body: new Container(
           child: new Column(
@@ -289,7 +370,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
-            return new CompanyName();
+            return new CustomerForm();
           }));
         },
         tooltip: 'Increment',
@@ -298,7 +379,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
     );
   }
 
-  void _dropdownItemSelected(Employee itemValue) {
+  void _dropdownItemSelected(Product itemValue) {
     setState(() {
       this._currentUser = itemValue;
     });

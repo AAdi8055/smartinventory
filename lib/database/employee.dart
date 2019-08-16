@@ -4,49 +4,85 @@ import 'package:async/async.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
-class Employee {
+class Product {
   int id;
-  String name;
-  String number;
+  String productName;
+  String productDesc;
+  String cost;
+  String unit;
+  String quantity;
 
-  Employee(this.id, this.name,this.number);
+  Product(this.id, this.productName, this.productDesc, this.cost, this.unit,
+      this.quantity);
 
   Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{'id': id, 'name': name, 'number':number};
+    var map = <String, dynamic>{
+      'id': id,
+      'name': productName,
+      'description': productDesc,
+      'cost': cost,
+      'unit': unit,
+      'quantity': quantity
+    };
     return map;
   }
 
-  Employee.fromMap(Map<String, dynamic> map) {
+  Product.fromMap(Map<String, dynamic> map) {
     id = map['id'];
-    name = map['name'];
-    number = map['number'];
+    productName = map['name'];
+    productDesc = map['description'];
+    cost = map['cost'];
+    unit = map['unit'];
+    quantity = map['quantity'];
   }
 }
-class Company {
+
+class Customer {
   int id;
   String name;
+  String address;
+  String email;
+  String contact;
 
-  Company(this.id, this.name);
+  Customer(this.id, this.name, this.address, this.contact, this.email);
 
   Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{'id': id, 'name': name};
+    var map = <String, dynamic>{
+      'id': id,
+      'cname': name,
+      'caddress': address,
+      'ccontact': contact,
+      'cemail': email
+    };
     return map;
   }
 
-  Company.fromMap(Map<String, dynamic> map) {
+  Customer.fromMap(Map<String, dynamic> map) {
     id = map['id'];
-    name = map['name'];
+    name = map['cname'];
+    address = map['caddress'];
+    contact = map['ccontact'];
+    email = map['cemail'];
+
   }
 }
 
 class dbHelper {
+  //Database name start
   static Database _db;
+  static const String DB_NAME = 'smartinventroy.db';
+
+  //Database name end
+  //Product Table filed start
+  static const String PRODUCT_TABLE = 'Product';
   static const String ID = 'id';
-  static const String NAME = 'name';
-  static const String NUMBER = 'number';
-  static const String TABLE = 'Employee';
-  static const String TABLE1 = 'Company';
-  static const String DB_NAME = 'employee.db';
+  static const String Product_NAME = 'name';
+  static const String DESC = 'description';
+  static const String UNIT = 'unit';
+  static const String QUANTITY = 'quantity';
+  static const String COST = 'cost';
+
+  //Product Table filed end
 
   Future<Database> get db async {
     if (_db != null) {
@@ -59,115 +95,127 @@ class dbHelper {
   initDB() async {
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, DB_NAME);
-    var db = await openDatabase(path, version: 1, onCreate: _onCreate, /*onUpgrade: _onUpgrade*/);
+    var db = await openDatabase(
+      path,
+      version: 1,
+      onCreate: _onCreate, /*onUpgrade: _onUpgrade*/
+    );
     return db;
   }
 
   _onCreate(Database db, int version) async {
-    await db
-        .execute("create table $TABLE ($ID integer primary key ,$NAME text,$NUMBER text)");
-    await db
-        .execute("create table $TABLE1 ($ID integer primary key ,$NAME text)");
-
+    await db.execute(
+        "create table $PRODUCT_TABLE ($ID integer primary key , $Product_NAME text, $DESC text, $COST text, $UNIT text, $QUANTITY text)");
+    await db.execute(
+        "create table $CUSTOMER_TABLE ($ID integer primary key ,$CUSTOMER_NAME text,$CUSTOMER_ADDRESS text, $CUSTOMER_CONTACT text, $CUSTOMER_EMAIL text)");
   }
 
-  Future<Employee> save(Employee employee) async {
-
+  Future<Product> saveProduct(Product product) async {
     var dbClient = await db;
-    employee.id = await dbClient.insert(TABLE, employee.toMap());
-    return employee;
+    product.id = await dbClient.insert(PRODUCT_TABLE, product.toMap());
+    return product;
   }
 
-  Future<List<Employee>> getEmployees() async {
+  Future<List<Product>> getProduct() async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query(TABLE, columns: [ID, NAME, NUMBER]);
-    List<Employee> employee = [];
+    List<Map> maps = await dbClient.query(PRODUCT_TABLE,
+        columns: [ID, Product_NAME, DESC, COST, UNIT, QUANTITY]);
+    List<Product> product = [];
     if (maps.length > 0) {
       for (int i = 0; i < maps.length; i++) {
-        employee.add(Employee.fromMap(maps[i]));
+        product.add(Product.fromMap(maps[i]));
       }
     }
-    return employee;
+    return product;
   }
-  Future<List<Employee>> getUserModelData() async {
+
+  Future<List<Product>> getUserModelData() async {
     var dbClient = await db;
     String sql;
-    sql = "SELECT * FROM $TABLE";
+    sql = "SELECT * FROM $PRODUCT_TABLE";
 
     var result = await dbClient.rawQuery(sql);
     if (result.length == 0) return null;
 
-    List<Employee> list = result.map((item) {
-      return Employee.fromMap(item);
+    List<Product> list = result.map((item) {
+      return Product.fromMap(item);
     }).toList();
 
     print(result);
     return list;
   }
 
-
-  Future<List<Employee>> getEmployeesName() async {
+  Future<int> delete(int id) async {
     var dbClient = await db;
-    var maps = await dbClient.query(TABLE, columns: [ NAME]);
-    List<Employee> employeeName = [];
-    if (maps.length > 0) {
-      for (int i = 0; i < maps.length; i++) {
-        employeeName.add(Employee.fromMap(maps[i]));
-      }
-    }
-    return employeeName;
+    return await dbClient
+        .delete(PRODUCT_TABLE, where: ' $ID = ?', whereArgs: [id]);
   }
- Future<int> delete(int id) async{
-   var dbClient = await db;
-   return await dbClient.delete(TABLE,where:' $ID = ?',whereArgs: [id] );
- }
- Future<int> update(Employee employee) async{
-   var dbClient = await db;
-   return await dbClient.update(TABLE, employee.toMap(),where:'$ID=?',whereArgs: [employee.id]);
- }
- Future close() async{
-   var dbClient = await db;
-   dbClient.close();
- }
- Future<int> deleteAll(int id) async{
+
+  Future<int> update(Product product) async {
+    var dbClient = await db;
+    return await dbClient.update(PRODUCT_TABLE, product.toMap(),
+        where: '$ID=?', whereArgs: [product.id]);
+  }
+
+  Future close() async {
+    var dbClient = await db;
+    dbClient.close();
+  }
+
+  Future<int> deleteAll(int id) async {
     var dbClient = await db;
 
-    return await dbClient.delete(TABLE);
-
- }
+    return await dbClient.delete(PRODUCT_TABLE);
+  }
 
   void dropTable() async {
     var dbClient = await db;
-    dbClient.query('DROP TABLE IF EXISTS Employee');
+    dbClient.query('DROP TABLE IF EXISTS Product');
   }
+
 /* void _onUpgrade(Database db, int oldVersion, int newVersion) {
    if (oldVersion < newVersion) {
      db.execute("ALTER TABLE $TABLE ADD COLUMN $NUMBER TEXT;");
    }
  }*/
-  Future<List<Company>> getCompany() async {
+
+//Customer Table filed start
+  static const String CUSTOMER_TABLE = 'Customer';
+  static const String CUSTOMER_NAME = 'cname';
+  static const String CUSTOMER_ADDRESS = 'caddress';
+  static const String CUSTOMER_CONTACT = 'ccontact';
+  static const String CUSTOMER_EMAIL = 'cemail';
+
+  //Customer Table filed end
+  // Customer database functions
+  Future<List<Customer>> getCompany() async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query(TABLE1, columns: [ID, NAME]);
-    List<Company> company = [];
+    List<Map> maps =
+        await dbClient.query(CUSTOMER_TABLE, columns: [ID, CUSTOMER_NAME, CUSTOMER_ADDRESS, CUSTOMER_CONTACT,CUSTOMER_EMAIL]);
+    List<Customer> company = [];
     if (maps.length > 0) {
       for (int i = 0; i < maps.length; i++) {
-        company.add(Company.fromMap(maps[i]));
+        company.add(Customer.fromMap(maps[i]));
       }
     }
     return company;
   }
-  Future<Company> saveCompany(Company company) async {
 
+  Future<Customer> saveCompany(Customer customer) async {
     var dbClient = await db;
-    company.id = await dbClient.insert(TABLE1, company.toMap());
-    return company;
+    customer.id = await dbClient.insert(CUSTOMER_TABLE, customer.toMap());
+    return customer;
   }
-  Future<int> deleteCompany(int id) async{
+
+  Future<int> deleteCustomer(int id) async {
     var dbClient = await db;
-    return await dbClient.delete(TABLE1,where:' $ID = ?',whereArgs: [id] );
+    return await dbClient
+        .delete(CUSTOMER_TABLE, where: ' $ID = ?', whereArgs: [id]);
   }
-  Future<int> updateCompany(Company company) async{
+
+  Future<int> updateCustomer(Customer customer) async {
     var dbClient = await db;
-    return await dbClient.update(TABLE1, company.toMap(),where:'$ID=?',whereArgs: [company.id]);
+    return await dbClient.update(CUSTOMER_TABLE, customer.toMap(),
+        where: '$ID=?', whereArgs: [customer.id]);
   }
 }
