@@ -22,6 +22,22 @@ class Employee {
     number = map['number'];
   }
 }
+class Company {
+  int id;
+  String name;
+
+  Company(this.id, this.name);
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{'id': id, 'name': name};
+    return map;
+  }
+
+  Company.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    name = map['name'];
+  }
+}
 
 class dbHelper {
   static Database _db;
@@ -29,6 +45,7 @@ class dbHelper {
   static const String NAME = 'name';
   static const String NUMBER = 'number';
   static const String TABLE = 'Employee';
+  static const String TABLE1 = 'Company';
   static const String DB_NAME = 'employee.db';
 
   Future<Database> get db async {
@@ -42,13 +59,16 @@ class dbHelper {
   initDB() async {
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, DB_NAME);
-    var db = await openDatabase(path, version: 2, onCreate: _onCreate, /*onUpgrade: _onUpgrade*/);
+    var db = await openDatabase(path, version: 1, onCreate: _onCreate, /*onUpgrade: _onUpgrade*/);
     return db;
   }
 
   _onCreate(Database db, int version) async {
     await db
         .execute("create table $TABLE ($ID integer primary key ,$NAME text,$NUMBER text)");
+    await db
+        .execute("create table $TABLE1 ($ID integer primary key ,$NAME text)");
+
   }
 
   Future<Employee> save(Employee employee) async {
@@ -125,4 +145,29 @@ class dbHelper {
      db.execute("ALTER TABLE $TABLE ADD COLUMN $NUMBER TEXT;");
    }
  }*/
+  Future<List<Company>> getCompany() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(TABLE1, columns: [ID, NAME]);
+    List<Company> company = [];
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        company.add(Company.fromMap(maps[i]));
+      }
+    }
+    return company;
+  }
+  Future<Company> saveCompany(Company company) async {
+
+    var dbClient = await db;
+    company.id = await dbClient.insert(TABLE1, company.toMap());
+    return company;
+  }
+  Future<int> deleteCompany(int id) async{
+    var dbClient = await db;
+    return await dbClient.delete(TABLE1,where:' $ID = ?',whereArgs: [id] );
+  }
+  Future<int> updateCompany(Company company) async{
+    var dbClient = await db;
+    return await dbClient.update(TABLE1, company.toMap(),where:'$ID=?',whereArgs: [company.id]);
+  }
 }

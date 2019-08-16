@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './database/employee.dart';
 import 'package:async/async.dart';
 import 'package:sqflite/sqflite.dart';
+import 'companyForm.dart';
 
 class ServiceHistory extends StatefulWidget {
   @override
@@ -11,7 +12,6 @@ class ServiceHistory extends StatefulWidget {
 class _ServiceHistoryState extends State<ServiceHistory> {
   Future<List<Employee>> employee;
   var _currentUser;
-
   Future<List<Employee>> employeeName;
   TextEditingController controller = TextEditingController();
   TextEditingController controller1 = TextEditingController();
@@ -46,7 +46,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
     controller.text = '';
     controller1.text = '';
     controller.selection;
-    _currentUser= null;
+    _currentUser = null;
   }
 
   validate() {
@@ -90,6 +90,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
           verticalDirection: VerticalDirection.down,
           children: <Widget>[
             TextFormField(
+              autofocus: true,
               controller: controller,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(labelText: 'Name'),
@@ -97,6 +98,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
               onSaved: (val) => name = val,
             ),
             TextFormField(
+              maxLength: 10,
               controller: controller1,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(labelText: 'Number'),
@@ -140,17 +142,29 @@ class _ServiceHistoryState extends State<ServiceHistory> {
                             ))
                         .toList(),
                     onChanged: (Employee itemValue) {
+                      controller.text = itemValue.name;
+                      controller1.text = itemValue.number;
                       _dropdownItemSelected(itemValue);
+                      setState(() {
+                        isUpdating = true;
+                        FlatButton(
+                          color: Colors.grey,
+                          onPressed: validate,
+                          child: Text(isUpdating ? 'Update' : 'Add'),
+                        );
+                      });
                     },
                     isExpanded: false,
                     //value: _currentUser,
-                    hint: Text('Select Name'),
+                    hint: _currentUser != null
+                        ? Text(_currentUser.name)
+                        : Text("No Name Selected"),
                   );
                 }),
-            SizedBox(height: 20.0),
+            /*SizedBox(height: 20.0),
             _currentUser != null
                 ? Text("Name: " + _currentUser.name)
-                : Text("No Name Selected"),
+                : Text("No Name Selected"),*/
           ],
         ),
       ),
@@ -162,78 +176,77 @@ class _ServiceHistoryState extends State<ServiceHistory> {
   SingleChildScrollView dataTable(List<Employee> employee) {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
-      child: DataTable(
-        dataRowHeight: 10.0,
-        columns: [
-          DataColumn(
-            label: Text('Name'),
-          ),
-          DataColumn(
-            label: Text('Number'),
-          ),
-          DataColumn(
-            label: Text('Update/ Delete'),
-          ),
-          /*DataColumn(
-            label: Text('Price'),
-          )*/
-        ],
-        rows: employee
-            .map(
-              (employee) => DataRow(cells: [
-                DataCell(
-                  Text(employee.name),
-                  onTap: () {
-                    setState(() {
-                      isUpdating = true;
-                      curUserId = employee.id;
-                    });
-                    controller.text = employee.name;
-                    controller1.text = employee.number;
-                  },
-                ),
-                DataCell(
-                  Text(employee.number),
-                  onTap: () {
-                    setState(() {
-                      isUpdating = true;
-                      curUserId = employee.id;
-                    });
-                    controller.text = employee.name;
-                    controller1.text = employee.number;
-                  },
-                ),
-                DataCell(SingleChildScrollView(
-                  child: Row(children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        DbHelper.delete(employee.id);
-                        refreshList();
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        DbHelper.delete(employee.id);
-                        refreshList();
-                      },
-                    ),
-                  ]),
-                )),
-                /*DataCell(IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    DbHelper.delete(employee.id);
-                    refreshList();
-                  },
-                ),
-                )*/
-                /*DataCell(Text('')),
-            */
-              ]),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: DataTable(
+          columns: [
+            DataColumn(
+              label: Text('Name'),
+            ),
+            DataColumn(
+              label: Text('Number'),
+            ),
+            DataColumn(
+              label: Text('Delete'),
+            ),
+            DataColumn(
+              label: Text('Price'),
             )
-            .toList(),
+          ],
+          rows: employee
+              .map(
+                (employee) => DataRow(cells: [
+                  DataCell(
+                    Text(
+                      employee.name,
+                    ),
+                    onTap: () {
+                      setState(() {
+                        isUpdating = true;
+                        curUserId = employee.id;
+                      });
+                      controller.text = employee.name;
+                      controller1.text = employee.number;
+                    },
+                    placeholder: false,
+                  ),
+                  DataCell(
+                    Text(employee.number),
+                    onTap: () {
+                      setState(() {
+                        isUpdating = true;
+                        curUserId = employee.id;
+                      });
+                      controller.text = employee.name;
+                      controller1.text = employee.number;
+                    },
+                  ),
+                  DataCell(
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        DbHelper.delete(employee.id);
+                        refreshList();
+                      },
+                    ),
+                  ),
+                  DataCell(
+                    Text('Yogesh'),
+                  ),
+                  /*DataCell(IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      DbHelper.delete(employee.id);
+                      refreshList();
+                    },
+                  ),
+                  )*/
+                  /*DataCell(Text('')),
+              */
+                ]),
+              )
+              .toList(),
+        ),
       ),
     );
   }
@@ -272,6 +285,16 @@ class _ServiceHistoryState extends State<ServiceHistory> {
           list(),
         ],
       )),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+            return new CompanyName();
+          }));
+        },
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ),
     );
   }
 
