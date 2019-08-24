@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './database/employee.dart';
+import './database/databaseFile.dart';
 import 'package:async/async.dart';
 import 'package:sqflite/sqflite.dart';
 import 'customerForm.dart';
@@ -99,7 +99,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
     }
     return null;
   }*/
-
+/*
   form() {
     return Form(
       key: formKey,
@@ -185,14 +185,14 @@ class _ServiceHistoryState extends State<ServiceHistory> {
                       controllerDesc.text = itemValue.productDesc;
                       _dropdownItemSelected(itemValue);
 
-                      /*setState(() {
+                      *//*setState(() {
                           isUpdating = true;
                           FlatButton(
                             color: Colors.grey,
                             onPressed: validate,
                             child: Text(isUpdating ? 'Update' : 'Add'),
                           );
-                        });*/
+                        });*//*
                     },
                     isExpanded: false,
                     //value: _currentUser,
@@ -201,19 +201,19 @@ class _ServiceHistoryState extends State<ServiceHistory> {
                         : Text("No Name Selected"),
                   );
                 }),
-            /*SizedBox(height: 20.0),
+            *//*SizedBox(height: 20.0),
               _currentUser != null
                   ? Text("Name: " + _currentUser.name)
-                  : Text("No Name Selected"),*/
+                  : Text("No Name Selected"),*//*
           ],
         ),
       ),
     );
-  }
+  }*/
 
   // ignore: non_constant_identifier_names
 
-  SingleChildScrollView dataTable(List<Product> product) {
+  /*SingleChildScrollView dataTable(List<Product> product) {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
@@ -331,8 +331,8 @@ class _ServiceHistoryState extends State<ServiceHistory> {
       ),
     );
   }
-
-  list() {
+*/
+  /*list() {
     return Expanded(
       child: FutureBuilder(
           future: product,
@@ -348,7 +348,7 @@ class _ServiceHistoryState extends State<ServiceHistory> {
           }),
     );
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -356,25 +356,129 @@ class _ServiceHistoryState extends State<ServiceHistory> {
       appBar: new AppBar(
         title: Text('Product Details'),
       ),
-      body: new Container(
-          child: new Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        verticalDirection: VerticalDirection.down,
-        children: <Widget>[
-          form(),
-          list(),
-        ],
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
-            return new CustomerForm();
-          }));
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      body: SingleChildScrollView(
+        child: new Container(
+            child: new Column(
+             mainAxisAlignment: MainAxisAlignment.center,
+             mainAxisSize: MainAxisSize.min,
+             verticalDirection: VerticalDirection.down,
+              children: <Widget>[
+              Form(
+               key: formKey,
+               child: Padding(
+                padding: EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  verticalDirection: VerticalDirection.down,
+                  children: <Widget>[
+                    TextFormField(
+                      autofocus: true,
+                      controller: controllerName,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(labelText: 'Product Name'),
+                      validator: (val) =>
+                          val.length == 0 ? 'Enter Product Name' : null,
+                      onSaved: (val) => productName = val,
+                    ),
+                    TextFormField(
+                      autofocus: true,
+                      controller: controllerDesc,
+                      keyboardType: TextInputType.text,
+                      decoration:
+                          InputDecoration(labelText: 'Product Decscribtion'),
+                      validator: (val) =>
+                          val.length == 0 ? 'Enter Product Decscribtion' : null,
+                      onSaved: (val) => productDesc = val,
+                    ),
+                    TextFormField(
+                      controller: controllerCost,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(labelText: 'Product cost'),
+                      validator: (val) =>
+                          val.length == 0 ? 'Enter Product Name' : null,
+                      onSaved: (val) => cost = val,
+                    ),
+                    TextFormField(
+                      controller: controllerUnit,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(labelText: 'Product Unit'),
+                      validator: (val) =>
+                          val.length == 0 ? 'Enter Product Name' : null,
+                      onSaved: (val) => unit = val,
+                    ),
+                    TextFormField(
+                      controller: controllerQuantity,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(labelText: 'Product Quantity'),
+                      validator: (val) =>
+                          val.length == 0 ? 'Enter Product Name' : null,
+                      onSaved: (val) => quantity = val,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        FlatButton(
+                          color: Colors.grey,
+                          onPressed: validate,
+                          child: Text(isUpdating ? 'Update' : 'Add'),
+                        ),
+                        FlatButton(
+                          color: Colors.grey,
+                          onPressed: () {
+                            setState(() {
+                              isUpdating = false;
+                            });
+                            clearName();
+                          },
+                          child: Text('Cancle'),
+                        )
+                      ],
+                    ),
+                   /* FutureBuilder<List<Product>>(
+                        future: DbHelper.getUserModelData(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<Product>> snapshot) {
+                          if (!snapshot.hasData)
+                            return CircularProgressIndicator();
+                          return DropdownButton<Product>(
+                            items: snapshot.data
+                                .map((product) => DropdownMenuItem<Product>(
+                                      child: Text(product.productName),
+                                      value: product,
+                                    ))
+                                .toList(),
+                            onChanged: (Product itemValue) {
+                              controllerName.text = itemValue.productName;
+                              controllerDesc.text = itemValue.productDesc;
+                              _dropdownItemSelected(itemValue);
+
+                              *//*setState(() {
+                            isUpdating = true;
+                            FlatButton(
+                              color: Colors.grey,
+                              onPressed: validate,
+                              child: Text(isUpdating ? 'Update' : 'Add'),
+                            );
+                          });*//*
+                            },
+                            isExpanded: false,
+                            //value: _currentUser,
+                            hint: _currentUser != null
+                                ? Text(_currentUser.name)
+                                : Text("No Name Selected"),
+                          );
+                        }),
+                    *//*SizedBox(height: 20.0),
+                _currentUser != null
+                    ? Text("Name: " + _currentUser.name)
+                    : Text("No Name Selected"),*/
+                  ],
+                ),
+              ),
+            ),
+          ],
+        )),
       ),
     );
   }

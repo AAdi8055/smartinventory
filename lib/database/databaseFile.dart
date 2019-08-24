@@ -188,7 +188,7 @@ class dbHelper {
 
   //Customer Table filed end
   // Customer database functions
-  Future<List<Customer>> getCompany() async {
+  Future<List<Customer>> getCustomer() async {
     var dbClient = await db;
     List<Map> maps =
         await dbClient.query(CUSTOMER_TABLE, columns: [ID, CUSTOMER_NAME, CUSTOMER_ADDRESS, CUSTOMER_CONTACT,CUSTOMER_EMAIL]);
@@ -201,7 +201,7 @@ class dbHelper {
     return company;
   }
 
-  Future<Customer> saveCompany(Customer customer) async {
+  Future<Customer> saveCustomer(Customer customer) async {
     var dbClient = await db;
     customer.id = await dbClient.insert(CUSTOMER_TABLE, customer.toMap());
     return customer;
@@ -218,4 +218,59 @@ class dbHelper {
     return await dbClient.update(CUSTOMER_TABLE, customer.toMap(),
         where: '$ID=?', whereArgs: [customer.id]);
   }
+  Future<List<Customer>> getCustomerData() async {
+    var dbClient = await db;
+    String sql;
+    sql = "SELECT * FROM $CUSTOMER_TABLE";
+
+    var result = await dbClient.rawQuery(sql);
+    if (result.length == 0) return null;
+
+    List<Customer> list = result.map((item) {
+      return Customer.fromMap(item);
+    }).toList();
+
+    print(result);
+    return list;
+  }
+  Future<List<Product>> getProductData() async {
+    var dbClient = await db;
+    String sql;
+    sql = "SELECT * FROM $PRODUCT_TABLE";
+
+    var result = await dbClient.rawQuery(sql);
+    if (result.length == 0) return null;
+
+    List<Product> list = result.map((item) {
+      return Product.fromMap(item);
+    }).toList();
+
+    print(result);
+    return list;
+  }
+  Future<int> deleteProduct(int id) async {
+    var dbClient = await db;
+    return await dbClient
+        .delete(PRODUCT_TABLE, where: ' $ID = ?', whereArgs: [id]);
+  }
 }
+
+class Invoice {
+  int id;
+  String productName;
+  String quantity;
+  String cost;
+  String total;
+  Invoice(this.id,this.productName,this.quantity,this.cost,this.total);
+  Map<String ,dynamic> toMap(){
+    var map = <String , dynamic>{
+      'id':id,
+      'productName':productName,
+      'quantity':quantity,
+      'cost':cost,
+      'total':total
+    };
+    return map;
+  }
+}
+

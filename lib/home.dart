@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/productList.dart';
 import './page.dart';
 import './profile.dart';
-import 'serviceHistory.dart';
+import 'productForm.dart';
+import 'list2.dart';
+import 'customerList.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -68,22 +71,49 @@ class _HomePageState extends State<HomePage> {
                   }),
               new Divider(),
               new ListTile(
-                  title: new Text("Service History"),
+                  title: new Text("Product"),
 //                  trailing: new Icon(Icons.arrow_right),
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) => new ServiceHistory()));
+                        builder: (BuildContext context) => new ProductList()));
+                  }),
+
+              new Divider(),
+              new ListTile(
+                  title: new Text("Invoice"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (BuildContext context) => new Page("Home")));
                   }),
               new Divider(),
               new ListTile(
-                  title: new Text("Service Request"),
+                  title: new Text("Product Stack"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (BuildContext context) => new Page("Home")));
+                  }),
+              new Divider(),
+              new ListTile(
+                  title: new Text("Account"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (BuildContext context) => new Page("Home")));
+                  }),
+              new Divider(),
+              new ListTile(
+                  title: new Text("Customer"),
 //                  trailing: new Icon(Icons.arrow_right),
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                        new Page("Service Request")));
+                        builder: (BuildContext context) => new NewList()));
                   }),
               new Divider(),
               new ListTile(
@@ -91,7 +121,6 @@ class _HomePageState extends State<HomePage> {
 //                trailing: new Icon(Icons.cancel),
                 onTap: () => Navigator.pop(context),
               ),
-              new Divider(),
             ],
           ),
         ),
@@ -154,12 +183,12 @@ class _HomePageState extends State<HomePage> {
 
 List<CategoryCard> categoryCard = [
   CategoryCard(
-      "https://img.icons8.com/color/48/000000/tear-off-calendar.png", "Event"),
+      "https://img.icons8.com/color/48/000000/tear-off-calendar.png", "Product Count"),
   CategoryCard(
-      "https://img.icons8.com/color/48/000000/message-squared.png", "Post"),
-  CategoryCard("https://img.icons8.com/color/48/000000/service.png", "Service"),
+      "https://img.icons8.com/color/48/000000/message-squared.png", "Payment"),
+  CategoryCard("https://img.icons8.com/color/48/000000/service.png", "OutStanding"),
   CategoryCard(
-      "https://img.icons8.com/bubbles/50/000000/product.png", "Product"),
+      "https://img.icons8.com/bubbles/50/000000/product.png", "Total Bill"),
   CategoryCard("https://img.icons8.com/bubbles/50/000000/about.png", "About"),
   CategoryCard(
       "https://img.icons8.com/cute-clipart/64/000000/feedback.png", "Feedback"),

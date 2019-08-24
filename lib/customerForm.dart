@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:smartinventory/database/employee.dart';
+import 'package:smartinventory/database/databaseFile.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CustomerForm extends StatefulWidget {
-  @override
+
+
   CustomerFormState createState() => new CustomerFormState();
 }
 
 class CustomerFormState extends State<CustomerForm> {
-  Future<List<Customer>> company;
+
+  Future<List<Customer>> customer;
   var _currentUser;
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerAddress = TextEditingController();
   TextEditingController controllerContact = TextEditingController();
   TextEditingController controllerEmail = TextEditingController();
+  String id;
   String name;
   String address;
   String contact;
@@ -36,14 +40,18 @@ class CustomerFormState extends State<CustomerForm> {
 
   refreshList() {
     setState(() {
-      company = DbHelper.getCompany();
+      customer = DbHelper.getCustomer();
     });
   }
 
   clearName() {
     controllerName.text = '';
+    controllerEmail.text='';
+    controllerContact.text ='';
+    controllerAddress.text ='';
     _currentUser = null;
   }
+
 
   validate() {
     if (formKey.currentState.validate()) {
@@ -57,26 +65,21 @@ class CustomerFormState extends State<CustomerForm> {
           contact,
           email,
         );
-        DbHelper.updateCompany(e);
+        DbHelper.updateCustomer(e);
+        showToast("Updated Successfully");
         setState(() {
           isUpdating = false;
         });
       } else {
-        Customer e = Customer(
-          null,
-          name,
-          address,
-          contact,
-          email
-        );
-        DbHelper.saveCompany(e);
+        Customer e = Customer(null, name, address, contact, email);
+        DbHelper.saveCustomer(e);
+        showToast("Save Successfully");
       }
       clearName();
       refreshList();
     }
   }
-
-  form() {
+ /* form() {
     return Form(
       key: formKey,
       child: Padding(
@@ -136,7 +139,7 @@ class CustomerFormState extends State<CustomerForm> {
                 )
               ],
             ),
-            /*FutureBuilder<List<Company>>(
+            *//*FutureBuilder<List<Company>>(
                 future: DbHelper.getUserModelData(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Company>> snapshot) {
@@ -158,18 +161,18 @@ class CustomerFormState extends State<CustomerForm> {
                         ? Text( _currentUser.name)
                         : Text("No Name Selected"),
                   );
-                }),*/
-            /*SizedBox(height: 20.0),
+                }),*//*
+            *//*SizedBox(height: 20.0),
             _currentUser != null
                 ? Text("Name: " + _currentUser.name)
-                : Text("No Name Selected"),*/
+                : Text("No Name Selected"),*//*
           ],
         ),
       ),
     );
   }
-
-  SingleChildScrollView dataTable(List<Customer> company) {
+*/
+  /* SingleChildScrollView dataTable(List<Customer> customer) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
@@ -194,50 +197,50 @@ class CustomerFormState extends State<CustomerForm> {
                 label: Text('Delete'),
               ),
             ],
-            rows: company
+            rows: customer
                 .map(
-                  (company) => DataRow(cells: [
+                  (customer) => DataRow(cells: [
                     DataCell(
-                      Text(company.name),
+                      Text(customer.name),
                       onTap: () {
                         setState(() {
                           isUpdating = true;
-                          curUserId = company.id;
+                          curUserId = customer.id;
                         });
-                        controllerName.text = company.name;
+                        controllerName.text = customer.name;
                       },
                       placeholder: false,
                     ),
                     DataCell(
-                      Text(company.address),
+                      Text(customer.address),
                       onTap: () {
                         setState(() {
                           isUpdating = true;
-                          curUserId = company.id;
+                          curUserId = customer.id;
                         });
-                        controllerName.text = company.name;
+                        controllerName.text = customer.name;
                       },
                       placeholder: false,
                     ),
                     DataCell(
-                      Text(company.contact),
+                      Text(customer.contact),
                       onTap: () {
                         setState(() {
                           isUpdating = true;
-                          curUserId = company.id;
+                          curUserId = customer.id;
                         });
-                        controllerName.text = company.name;
+                        controllerName.text = customer.name;
                       },
                       placeholder: false,
                     ),
                     DataCell(
-                      Text(company.email),
+                      Text(customer.email),
                       onTap: () {
                         setState(() {
                           isUpdating = true;
-                          curUserId = company.id;
+                          curUserId = customer.id;
                         });
-                        controllerName.text = company.name;
+                        controllerName.text = customer.name;
                       },
                       placeholder: false,
                     ),
@@ -246,7 +249,7 @@ class CustomerFormState extends State<CustomerForm> {
                         child: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () {
-                            DbHelper.deleteCustomer(company.id);
+                            DbHelper.deleteCustomer(customer.id);
                             refreshList();
                           },
                         ),
@@ -260,11 +263,11 @@ class CustomerFormState extends State<CustomerForm> {
       ),
     );
   }
-
-  list() {
+*/
+  /*list() {
     return Expanded(
       child: FutureBuilder(
-          future: company,
+          future: customer,
           // ignore: missing_return
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -276,7 +279,7 @@ class CustomerFormState extends State<CustomerForm> {
             return CircularProgressIndicator();
           }),
     );
-  }
+  }*/
 
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -284,22 +287,80 @@ class CustomerFormState extends State<CustomerForm> {
       appBar: AppBar(
         title: Text('Customer Details'),
       ),
-      body: new Container(
-          child: new Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        verticalDirection: VerticalDirection.down,
-        children: <Widget>[
-          form(),
-          list(),
-        ],
-      )),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  autofocus: true,
+                  controller: controllerName,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(labelText: 'Customer Name'),
+                  validator: (val) => val.length == 0 ? 'Enter Name' : null,
+                  onSaved: (val) => name = val,
+                ),
+                TextFormField(
+                  controller: controllerAddress,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(labelText: 'Address'),
+                  validator: (val) => val.length == 0 ? 'Enter Name' : null,
+                  onSaved: (val) => address = val,
+                ),
+                TextFormField(
+                  maxLength: 10,
+                  controller: controllerContact,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(labelText: 'Contact'),
+                  validator: (val) => val.length == 0 ? 'Enter Name' : null,
+                  onSaved: (val) => contact = val,
+                ),
+                TextFormField(
+                  controller: controllerEmail,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(labelText: 'Email'),
+                  validator: (val) => val.length == 0 ? 'Enter Name' : null,
+                  onSaved: (val) => email = val,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    FlatButton(
+                      color: Colors.grey,
+                      onPressed: validate,
+                      child: Text(isUpdating ? 'Update' : 'Add'),
+                    ),
+                    FlatButton(
+                      color: Colors.grey,
+                      onPressed: () {
+                        showToast('Cancle');
+                        setState(() {
+                          isUpdating = false;
+                        });
+                        clearName();
+                      },
+                      child: Text('Cancle'),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
-
-  void _dropdownItemSelected(Customer itemValue) {
-    setState(() {
-      this._currentUser = itemValue;
-    });
+  void showToast(String msg){
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.grey,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
   }
 }
