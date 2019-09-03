@@ -63,7 +63,6 @@ class Customer {
     address = map['caddress'];
     contact = map['ccontact'];
     email = map['cemail'];
-
   }
 }
 
@@ -190,8 +189,13 @@ class dbHelper {
   // Customer database functions
   Future<List<Customer>> getCustomer() async {
     var dbClient = await db;
-    List<Map> maps =
-        await dbClient.query(CUSTOMER_TABLE, columns: [ID, CUSTOMER_NAME, CUSTOMER_ADDRESS, CUSTOMER_CONTACT,CUSTOMER_EMAIL]);
+    List<Map> maps = await dbClient.query(CUSTOMER_TABLE, columns: [
+      ID,
+      CUSTOMER_NAME,
+      CUSTOMER_ADDRESS,
+      CUSTOMER_CONTACT,
+      CUSTOMER_EMAIL
+    ]);
     List<Customer> company = [];
     if (maps.length > 0) {
       for (int i = 0; i < maps.length; i++) {
@@ -218,6 +222,7 @@ class dbHelper {
     return await dbClient.update(CUSTOMER_TABLE, customer.toMap(),
         where: '$ID=?', whereArgs: [customer.id]);
   }
+
   Future<List<Customer>> getCustomerData() async {
     var dbClient = await db;
     String sql;
@@ -233,6 +238,7 @@ class dbHelper {
     print(result);
     return list;
   }
+
   Future<List<Product>> getProductData() async {
     var dbClient = await db;
     String sql;
@@ -248,6 +254,7 @@ class dbHelper {
     print(result);
     return list;
   }
+
   Future<int> deleteProduct(int id) async {
     var dbClient = await db;
     return await dbClient
@@ -261,16 +268,17 @@ class Invoice {
   String quantity;
   String cost;
   String total;
-  Invoice(this.id,this.productName,this.quantity,this.cost,this.total);
-  Map<String ,dynamic> toMap(){
-    var map = <String , dynamic>{
-      'id':id,
-      'productName':productName,
-      'quantity':quantity,
-      'cost':cost,
-      'total':total
+
+  Invoice(this.id, this.productName, this.quantity, this.cost, this.total);
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      'id': id,
+      'productName': productName,
+      'quantity': quantity,
+      'cost': cost,
+      'total': total
     };
     return map;
   }
 }
-

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -7,18 +8,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        routes: <String, WidgetBuilder>{
+      routes: <String, WidgetBuilder>{
         '/home': (BuildContext context) => new HomePage(),
-        },
-
+        '/home': (BuildContext context) => new HomePage(),
+        '/home': (BuildContext context) => new HomePage(),
+        '/home': (BuildContext context) => new HomePage(),
+        '/home': (BuildContext context) => new HomePage(),
+        '/home': (BuildContext context) => new HomePage(),
+      },
       home: new MyHomePage(),
     );
   }
 }
+
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => new _MyHomePageState();
 }
+
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
@@ -40,12 +47,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               fontSize: 80.0, fontWeight: FontWeight.bold)),
                     ),
                     Container(
-
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                            0.0, 175.0, 0.0, 0.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(0.0, 175.0, 0.0, 0.0),
                         child: Center(
-                          child: Text('Login', textAlign: TextAlign.center,
+                          child: Text('Login',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontSize: 80.0, fontWeight: FontWeight.bold)),
                         ),
@@ -67,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 color: Colors.grey),
                             focusedBorder: UnderlineInputBorder(
                                 borderSide:
-                                BorderSide(color: Colors.blueAccent))),
+                                    BorderSide(color: Colors.blueAccent))),
                       ),
                       SizedBox(height: 20.0),
                       TextField(
@@ -79,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 color: Colors.grey),
                             focusedBorder: UnderlineInputBorder(
                                 borderSide:
-                                BorderSide(color: Colors.blueAccent))),
+                                    BorderSide(color: Colors.blueAccent))),
                         obscureText: true,
                       ),
                       SizedBox(height: 5.0),

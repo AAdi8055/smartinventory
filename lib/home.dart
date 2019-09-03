@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/chart.dart';
+import 'package:smartinventory/newMain.dart';
 import 'package:smartinventory/productList.dart';
 import './page.dart';
 import './profile.dart';
@@ -29,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text("Home Page"),
+          title: new Text("Home"),
           backgroundColor: Colors.blueAccent,
         ),
         drawer: new Drawer(
@@ -61,13 +63,145 @@ class _HomePageState extends State<HomePage> {
                     new MaterialPageRoute(
                         builder: (BuildContext context) => new Profile())),
               ),
+              ExpansionTile(
+                title: Text("Master"),
+                children: <Widget>[
+                  new Divider(),
+                  new ListTile(
+                      title: new Text("Vendor"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(new MaterialPageRoute(
+                            builder: (BuildContext context) => new NewMain()));
+                      }),
+                  new Divider(),
+                  new ListTile(
+                      title: new Text("Customer with user"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(new MaterialPageRoute(
+                            builder: (BuildContext context) => new NewMain()));
+                      }),
+                ],
+              ),
+              ExpansionTile(
+                title: Text("Sales Transaction"),
+                children: <Widget>[
+                  new Divider(),
+                  new ListTile(
+                      title: new Text("Sales Invoice"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(new MaterialPageRoute(
+                            builder: (BuildContext context) => new NewMain()));
+                      }),
+                ],
+              ),
+              ExpansionTile(title: Text('Account Transaction'), children: <
+                  Widget>[
+                new Divider(),
+                new ListTile(
+                    title: new Text("Customer Payment"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (BuildContext context) => new NewMain()));
+                    }),
+                new Divider(),
+                new ListTile(
+                    title: new Text("Vendor Payment"),
+//                  trailing: new Icon(Icons.arrow_right),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              new ProductList()));
+                    }),
+                new Divider(),
+                new ListTile(
+                    title: new Text("Fund Transfer"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (BuildContext context) => new Page("Home")));
+                    }),
+                new Divider(),
+                new ListTile(
+                    title: new Text("Incone/Expenses"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (BuildContext context) => new Page("Home")));
+                    }),
+                new Divider(),
+                new ListTile(
+                    title: new Text("Cash/Bank Book"),
+//                  trailing: new Icon(Icons.arrow_upward),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (BuildContext context) => new ChartPage()));
+                    }),
+                new Divider(),
+                new ListTile(
+                    title: new Text("Customer Statement"),
+//                  trailing: new Icon(Icons.arrow_right),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (BuildContext context) => new NewList()));
+                    }),
+                new Divider(),
+                new ListTile(
+                  title: new Text("Balance Transfer"),
+//                trailing: new Icon(Icons.cancel),
+                  onTap: () => Navigator.pop(context),
+                ),
+              ]),
+              ExpansionTile(title: Text('Reports'), children: <Widget>[
+                new Divider(),
+                new ListTile(
+                  title: new Text('Sales & Collection'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                new Divider(),
+                new ListTile(
+                  title: new Text('Outstanding Report'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                new Divider(),
+                new ListTile(
+                  title: new Text('Sales Details Report'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                new Divider(),
+                new ListTile(
+                  title: new Text('Daily Cash Report'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                new Divider(),
+                new ListTile(
+                  title: new Text('Sales Register'),
+                  onTap: () => Navigator.pop(context),
+                ),
+              ]),
               new ListTile(
+                title: new Text('Balance Request'),
+                onTap: () => Navigator.pop(context),
+              ),
+              /* new ListTile(
                   title: new Text("Home"),
 //                  trailing: new Icon(Icons.arrow_upward),
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) => new Page("Home")));
+                        builder: (BuildContext context) => new NewMain()));
                   }),
               new Divider(),
               new ListTile(
@@ -78,7 +212,6 @@ class _HomePageState extends State<HomePage> {
                     Navigator.of(context).push(new MaterialPageRoute(
                         builder: (BuildContext context) => new ProductList()));
                   }),
-
               new Divider(),
               new ListTile(
                   title: new Text("Invoice"),
@@ -104,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) => new Page("Home")));
+                        builder: (BuildContext context) => new ChartPage()));
                   }),
               new Divider(),
               new ListTile(
@@ -120,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                 title: new Text("Logout"),
 //                trailing: new Icon(Icons.cancel),
                 onTap: () => Navigator.pop(context),
-              ),
+              ),*/
             ],
           ),
         ),
@@ -128,70 +261,57 @@ class _HomePageState extends State<HomePage> {
           body: NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  SliverAppBar(
-                    expandedHeight: 200.0,
-                    floating: false,
-                    pinned: false,
-                    backgroundColor: Colors.blueAccent,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: FlexibleSpaceBar(
-                        background: Center(
-                          child: Text(
-                              "Menu",style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          )
-
-                          ),
-                        )),
-
-                  ),
-                ];
+                return <Widget>[];
               },
-              body: (Stack(children: <Widget>[
-                /*Positioned(
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(16.0, 32.0, 32.0, 64.0),
-                    color: Colors.blueAccent,
-                    width: double.infinity,
-                    alignment: AlignmentDirectional.center,
-                    height: 150,
-                    child: Text(
-                      "I am looking for an opportunity to...",
-                      style: TextStyle(
-                          color: Colors.black12,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24),
-                    ),
-                  ),*/
-                Positioned(
-                  /*  top: -10.0,*/
-                    child: GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      primary: false,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                      crossAxisCount: 2,
-                      children: categoryCard,
-                    )),
-              ]))),
+              body: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("asstes/bg.png"), fit: BoxFit.cover)),
+                child: (Stack(children: <Widget>[
+                  /*Positioned(
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(16.0, 32.0, 32.0, 64.0),
+                      color: Colors.blueAccent,
+                      width: double.infinity,
+                      alignment: AlignmentDirectional.center,
+                      height: 150,
+                      child: Text(
+                        "I am looking for an opportunity to...",
+                        style: TextStyle(
+                            color: Colors.black12,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24),
+                      ),
+                    ),*/
+                  Positioned(
+                      /*  top: -10.0,*/
+                      child: GridView.count(
+                    primary: false,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    padding: const EdgeInsets.fromLTRB(16.0, 150.0, 16.0, 16.0),
+                    crossAxisCount: 2,
+                    children: categoryCard,
+                  )),
+                ])),
+              )),
         ));
   }
 }
 
 List<CategoryCard> categoryCard = [
   CategoryCard(
-      "https://img.icons8.com/color/48/000000/tear-off-calendar.png", "Product Count"),
-  CategoryCard(
-      "https://img.icons8.com/color/48/000000/message-squared.png", "Payment"),
-  CategoryCard("https://img.icons8.com/color/48/000000/service.png", "OutStanding"),
-  CategoryCard(
-      "https://img.icons8.com/bubbles/50/000000/product.png", "Total Bill"),
-  CategoryCard("https://img.icons8.com/bubbles/50/000000/about.png", "About"),
-  CategoryCard(
-      "https://img.icons8.com/cute-clipart/64/000000/feedback.png", "Feedback"),
+      "https://img.icons8.com/ios-filled/72/paid.png", "Today's Balance"),
+  CategoryCard("https://img.icons8.com/color/48/000000/message-squared.png",
+      "Today's Collection"),
+  CategoryCard("https://img.icons8.com/color/48/000000/service.png",
+      "Today's OutStanding"),
+  CategoryCard("https://img.icons8.com/bubbles/50/000000/product.png",
+      "Account Balance"),
+  CategoryCard("https://img.icons8.com/bubbles/50/000000/about.png",
+      "Available Balance"),
+  CategoryCard("https://img.icons8.com/cute-clipart/64/000000/feedback.png",
+      "Balance Request"),
 ];
 
 class CategoryCard extends StatelessWidget {
@@ -201,47 +321,50 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      color: Colors.white,
-      elevation: 4.0,
-      child: new InkWell(
-          onTap: () {
+    return Container(
+      child: Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        color: Colors.white,
+        elevation: 10.0,
+        child: new InkWell(
+            onTap: () {
 //            print("tapped");
-            if (titles == "Event") {
-              Navigator.of(context).pushNamed('/event');
-            } else if (titles == "Post") {
-              Navigator.of(context).pushNamed('/post');
-            } else if (titles == "Service") {
-              Navigator.of(context).pushNamed('/service');
-            } else if (titles == "Product") {
-              Navigator.of(context).pushNamed('/product');
-            } else if (titles == "About") {
-              Navigator.of(context).pushNamed('/about');
-            } else if (titles == "Feedback") {
-              Navigator.of(context).pushNamed('/addfeedback');
-            }
-          },
-          child: Padding(
-            padding: new EdgeInsets.fromLTRB(16.0, 28.0, 16.0, 16.0),
-            child: Column(
-              children: <Widget>[
-                Image(
-                  image: new NetworkImage(images),
-                  fit: BoxFit.cover,
-                  height: 80,
-                  width: 80,
-                ),
-                Expanded(
-                  child: Text(
-                    titles,
-                    style: TextStyle(fontSize: 20),
+              if (titles == "Event") {
+                Navigator.of(context).pushNamed('/event');
+              } else if (titles == "Post") {
+                Navigator.of(context).pushNamed('/post');
+              } else if (titles == "Service") {
+                Navigator.of(context).pushNamed('/service');
+              } else if (titles == "Product") {
+                Navigator.of(context).pushNamed('/product');
+              } else if (titles == "About") {
+                Navigator.of(context).pushNamed('/about');
+              } else if (titles == "Feedback") {
+                Navigator.of(context).pushNamed('/addfeedback');
+              }
+            },
+            child: Padding(
+              padding: new EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+              child: Column(
+                children: <Widget>[
+                  Image(
+                    image: new NetworkImage(images),
+                    fit: BoxFit.cover,
+                    height: 80,
+                    width: 80,
                   ),
-                )
-              ],
-            ),
-          )),
+                  Expanded(
+                    child: Text(
+                      titles,
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              ),
+            )),
+      ),
     );
-
   }
 }
