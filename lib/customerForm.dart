@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/database/databaseFile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:smartinventory/routePages/availableBalance.dart';
 
 class CustomerForm extends StatefulWidget {
+  final String id, name, email, address, contact;
 
+  CustomerForm(
+      {Key key, this.id, this.name, this.email, this.address, this.contact})
+      : super(key: key);
 
-  CustomerFormState createState() => new CustomerFormState();
+  CustomerFormState createState() => new CustomerFormState(
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      address: this.address,
+      contact: this.contact);
 }
 
 class CustomerFormState extends State<CustomerForm> {
+  String id, name, email, address, contact;
+
+  CustomerFormState(
+      {this.id, this.name, this.email, this.address, this.contact});
 
   Future<List<Customer>> customer;
   var _currentUser;
@@ -16,14 +30,14 @@ class CustomerFormState extends State<CustomerForm> {
   TextEditingController controllerAddress = TextEditingController();
   TextEditingController controllerContact = TextEditingController();
   TextEditingController controllerEmail = TextEditingController();
-  String id;
+
+  /*String id;
   String name;
   String address;
   String contact;
-  String email;
+  String email;*/
 
 /*  String _mobile;*/
-  int curUserId;
   @override
   var DbHelper;
   bool isUpdating;
@@ -34,7 +48,16 @@ class CustomerFormState extends State<CustomerForm> {
     // TODO: implement initState
     super.initState();
     DbHelper = dbHelper();
-    isUpdating = false;
+    if (id != null) {
+      isUpdating = true;
+      _currentUser = int.parse(id);
+      controllerName.text = name;
+      controllerEmail.text = email;
+      controllerAddress.text = address;
+      controllerContact.text = contact;
+    } else {
+      isUpdating = false;
+    }
     refreshList();
   }
 
@@ -46,20 +69,24 @@ class CustomerFormState extends State<CustomerForm> {
 
   clearName() {
     controllerName.text = '';
-    controllerEmail.text='';
-    controllerContact.text ='';
-    controllerAddress.text ='';
+    controllerEmail.text = '';
+    controllerContact.text = '';
+    controllerAddress.text = '';
     _currentUser = null;
+    name='';
+    email='';
+    contact='';
+    address='';
+    id='';
   }
-
 
   validate() {
     if (formKey.currentState.validate()) {
 /*      DbHelper.dropTable(employee);*/
       formKey.currentState.save();
-      if (isUpdating) {
+      if (isUpdating && id != null) {
         Customer e = Customer(
-          curUserId,
+          _currentUser,
           name,
           address,
           contact,
@@ -70,16 +97,24 @@ class CustomerFormState extends State<CustomerForm> {
         setState(() {
           isUpdating = false;
         });
+        clearName();
+        newPage();
       } else {
         Customer e = Customer(null, name, address, contact, email);
         DbHelper.saveCustomer(e);
         showToast("Save Successfully");
+        clearName();
       }
-      clearName();
+
       refreshList();
     }
   }
- /* form() {
+void newPage()  {
+  Navigator.of(context).pop();
+  Navigator.of(context).push(new MaterialPageRoute(
+  builder: (BuildContext context) => new AvailableBalance()));
+}
+  /* form() {
     return Form(
       key: formKey,
       child: Padding(
@@ -139,7 +174,7 @@ class CustomerFormState extends State<CustomerForm> {
                 )
               ],
             ),
-            *//*FutureBuilder<List<Company>>(
+            */ /*FutureBuilder<List<Company>>(
                 future: DbHelper.getUserModelData(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Company>> snapshot) {
@@ -161,11 +196,11 @@ class CustomerFormState extends State<CustomerForm> {
                         ? Text( _currentUser.name)
                         : Text("No Name Selected"),
                   );
-                }),*//*
-            *//*SizedBox(height: 20.0),
+                }),*/ /*
+            */ /*SizedBox(height: 20.0),
             _currentUser != null
                 ? Text("Name: " + _currentUser.name)
-                : Text("No Name Selected"),*//*
+                : Text("No Name Selected"),*/ /*
           ],
         ),
       ),
@@ -329,7 +364,8 @@ class CustomerFormState extends State<CustomerForm> {
                   children: <Widget>[
                     FlatButton(
                       color: Colors.grey,
-                      onPressed: validate,
+                      // ignore: unnecessary_statements
+                      onPressed:  validate,
                       child: Text(isUpdating ? 'Update' : 'Add'),
                     ),
                     FlatButton(
@@ -352,7 +388,8 @@ class CustomerFormState extends State<CustomerForm> {
       ),
     );
   }
-  void showToast(String msg){
+
+  void showToast(String msg) {
     Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_SHORT,
@@ -360,7 +397,6 @@ class CustomerFormState extends State<CustomerForm> {
         timeInSecForIos: 1,
         backgroundColor: Colors.grey,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
+        fontSize: 16.0);
   }
 }

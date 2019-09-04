@@ -64,9 +64,9 @@ class NewListState extends State<NewList> {
                             ),
                             onTap: (){
 
-                              Navigator.of(context).push(new MaterialPageRoute(
+                             /* Navigator.of(context).push(new MaterialPageRoute(
                                   builder: (BuildContext context) => new CustomerForm()));
-
+*/
                             },
                           )
                         ),

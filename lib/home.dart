@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/chart.dart';
+import 'package:smartinventory/customerForm.dart';
 import 'package:smartinventory/newMain.dart';
 import 'package:smartinventory/productList.dart';
 import './page.dart';
@@ -193,8 +194,12 @@ class _HomePageState extends State<HomePage> {
               ]),
               new ListTile(
                 title: new Text('Balance Request'),
-                onTap: () => Navigator.pop(context),
-              ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (BuildContext context) => new CustomerForm()));
+                  }),
+
               /* new ListTile(
                   title: new Text("Home"),
 //                  trailing: new Icon(Icons.arrow_upward),
@@ -305,7 +310,7 @@ List<CategoryCard> categoryCard = [
   CategoryCard("https://img.icons8.com/color/48/000000/message-squared.png",
       "Today's Collection"),
   CategoryCard("https://img.icons8.com/color/48/000000/service.png",
-      "Today's OutStanding"),
+      "Total OutStanding"),
   CategoryCard("https://img.icons8.com/bubbles/50/000000/product.png",
       "Account Balance"),
   CategoryCard("https://img.icons8.com/bubbles/50/000000/about.png",
@@ -330,17 +335,17 @@ class CategoryCard extends StatelessWidget {
         child: new InkWell(
             onTap: () {
 //            print("tapped");
-              if (titles == "Event") {
-                Navigator.of(context).pushNamed('/event');
-              } else if (titles == "Post") {
-                Navigator.of(context).pushNamed('/post');
-              } else if (titles == "Service") {
-                Navigator.of(context).pushNamed('/service');
-              } else if (titles == "Product") {
-                Navigator.of(context).pushNamed('/product');
-              } else if (titles == "About") {
-                Navigator.of(context).pushNamed('/about');
-              } else if (titles == "Feedback") {
+              if (titles == "Today's Balance") {
+                Navigator.of(context).pushNamed('/todaysBalance');
+              } else if (titles == "Today's Collection") {
+                Navigator.of(context).pushNamed('/todaysCollection');
+              } else if (titles == "Total OutStanding") {
+                Navigator.of(context).pushNamed('/totalOutStanding');
+              } else if (titles == "Account Balance") {
+                Navigator.of(context).pushNamed('/accountBalance');
+              } else if (titles == "Available Balance") {
+                Navigator.of(context).pushNamed('/availableBalance');
+              } else if (titles == "Balance Request") {
                 Navigator.of(context).pushNamed('/addfeedback');
               }
             },

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/routePages/accountBalance.dart';
+import 'package:smartinventory/routePages/availableBalance.dart';
+import 'package:smartinventory/routePages/balanceRequest.dart';
+import 'package:smartinventory/routePages/todaysBalance.dart';
+import 'package:smartinventory/routePages/todaysCollection.dart';
+import 'package:smartinventory/routePages/totalOutstanding.dart';
 import 'home.dart';
 
 void main() => runApp(MyApp());
@@ -10,11 +16,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: <String, WidgetBuilder>{
         '/home': (BuildContext context) => new HomePage(),
-        '/home': (BuildContext context) => new HomePage(),
-        '/home': (BuildContext context) => new HomePage(),
-        '/home': (BuildContext context) => new HomePage(),
-        '/home': (BuildContext context) => new HomePage(),
-        '/home': (BuildContext context) => new HomePage(),
+        '/todaysBalance': (BuildContext context) => new TodaysBalance(),
+        '/todaysCollection': (BuildContext context) => new TodayCollection(),
+        '/totalOutStanding': (BuildContext context) => new TotalOutstanding(),
+        '/accountBalance': (BuildContext context) => new AccountBalance(),
+        '/availableBalance': (BuildContext context) => new AvailableBalance(),
+        '/balanceRequest': (BuildContext context) => new BalanceRequest(),
       },
       home: new MyHomePage(),
     );
