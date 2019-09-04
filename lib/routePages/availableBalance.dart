@@ -139,6 +139,7 @@ class AvailableBalanceState extends State<AvailableBalance> {
               ),
               DataColumn(
                 label: Text('Email'),
+
               ),
               DataColumn(
                 label: Text('Edit /Delete'),
