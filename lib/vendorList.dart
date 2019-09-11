@@ -1,338 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smartinventory/database/databaseFile.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'customerForm.dart';
 
-import '../customerForm.dart';
-class BalanceRequest extends StatefulWidget{
+class VendorList extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => BalanceRequestState();
-
+  _VendorListState createState() => _VendorListState();
 }
-class BalanceRequestState extends State<BalanceRequest>{
-  String id;
-  String name;
-  String address;
-  String contact;
-  String email;
-  var DbHelper;
+
+class _VendorListState extends State<VendorList> {
   Future<List<Customer>> customer;
-
-  @override
-  void initState() {
-    super.initState();
-    DbHelper = dbHelper();
-    refreshList();
-  }
-
-  refreshList() {
-    setState(() {
-      customer = DbHelper.getCustomer();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Customer List'),
-
-      ),
-
-      body: FutureBuilder<List<Customer>>(
-        future: DbHelper.getCustomerData(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator());
-
-          return ListView(
-            children: snapshot.data
-                .map((customer) =>
-                Card(
-                  elevation: 5,
-                  child: Slidable(
-                    actionPane: SlidableBehindActionPane(),
-                    actionExtentRatio: 0.20,
-                    child: Container(
-                        child: ListTile(
-                          contentPadding: EdgeInsets.all(5.0),
-                          title: Text('Name: '+customer.name),
-                          subtitle: Text( 'Contact : '+customer.contact +'\nAddress: '+ customer.address+'\nEmail: ' +customer.email),
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            child: Text(customer.name[0],
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.black,
-                                )),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              name=customer.name;
-                              id=customer.id.toString();
-                              email=customer.email;
-                              address=customer.address;
-                              contact=customer.contact;
-                              Popup();
-                            });
-                          },
-                        )
-                    ),
-                    actions: <Widget>[],
-                    secondaryActions: <Widget>[
-                      IconSlideAction(
-                        caption: 'Delete',
-                        color: Colors.red,
-                        icon: Icons.delete,
-                        onTap: () {
-                          id=customer.id.toString();
-                          DeletePopup();
-                          refreshList();
-                        },
-                      ),
-                    ],
-                  ),
-                ))
-                .toList(),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
-            return new CustomerForm();
-          }));
-        },
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-
-  void showToast(String msg) {
-    Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.grey,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
-  }
-  Popup(){
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                    Radius.circular(32.0))),
-            contentPadding:
-            EdgeInsets.only(top: 0.0),
-            content: Container(
-              width: 300.0,
-              child: Column(
-                mainAxisAlignment:
-                MainAxisAlignment.start,
-                crossAxisAlignment:
-                CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  InkWell(
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          top: 20.0, bottom: 20.0),
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent,
-                        borderRadius: BorderRadius
-                            .only(
-                            topLeft:
-                            Radius.circular(
-                                32.0),
-                            topRight:
-                            Radius.circular(
-                                32.0)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment
-                            .spaceEvenly,
-                        mainAxisSize:
-                        MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            "ALERT",
-                            style: TextStyle(
-                                fontSize: 24.0,
-                                color:
-                                Colors.white),
-                            textAlign:
-                            TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: 30.0, right: 30.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText:
-                        "Do you want to Edit Data",
-                        border: InputBorder.none,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
-                    children: <Widget>[
-                      FlatButton(
-                          child: Text('Yes'),
-                          onPressed: () {
-                            setState(() {
-                              Navigator.pop(
-                                  context);
-                              Navigator.push(
-                                  context,
-                                  new MaterialPageRoute(
-                                      builder: (BuildContext context) => new CustomerForm(
-                                          id: id,
-                                          name:name,
-                                          email: email,
-                                          address: address,
-                                          contact: contact)));
-                            });
-                          }),
-                      Padding(
-                        padding:
-                        const EdgeInsets.only(
-                            left: 8.0),
-                        child: FlatButton(
-                            child: Text('no'),
-                            onPressed: () {
-                              Navigator.pop(
-                                  context);
-                            }),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          );
-        });
-  }
-  DeletePopup(){
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                    Radius.circular(32.0))),
-            contentPadding:
-            EdgeInsets.only(top: 0.0),
-            content: Container(
-              width: 300.0,
-              child: Column(
-                mainAxisAlignment:
-                MainAxisAlignment.start,
-                crossAxisAlignment:
-                CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  InkWell(
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          top: 20.0, bottom: 20.0),
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent,
-                        borderRadius: BorderRadius
-                            .only(
-                            topLeft:
-                            Radius.circular(
-                                32.0),
-                            topRight:
-                            Radius.circular(
-                                32.0)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment
-                            .spaceEvenly,
-                        mainAxisSize:
-                        MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            "ALERT",
-                            style: TextStyle(
-                                fontSize: 24.0,
-                                color:
-                                Colors.white),
-                            textAlign:
-                            TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: 30.0, right: 30.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText:
-                        "Do you want to Delete Data",
-                        border: InputBorder.none,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
-                    children: <Widget>[
-                      FlatButton(
-                          child: Text('Yes'),
-                          onPressed: () {
-                            setState(() {
-                              Navigator.pop(
-                                  context);
-                              DbHelper.deleteCustomer(int.parse(id));
-                              showToast('Deleted Successfully');
-                            });
-                          }),
-                      Padding(
-                        padding:
-                        const EdgeInsets.only(
-                            left: 8.0),
-                        child: FlatButton(
-                            child: Text('no'),
-                            onPressed: () {
-                              Navigator.pop(
-                                  context);
-                            }),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          );
-        });
-  }
- /* Future<List<Customer>> customer;
   var _currentUser;
 
   TextEditingController controllerName = TextEditingController();
@@ -414,15 +91,6 @@ class BalanceRequestState extends State<BalanceRequest>{
           list(),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
-            return new CustomerForm();
-          }));
-        },
-        child: Icon(Icons.add),
-      ),
     );
   }
 
@@ -449,11 +117,11 @@ class BalanceRequestState extends State<BalanceRequest>{
                   setState(() {
                     if (ascending) {
                       customer.sort((a, b) => b.name.compareTo(a.name));
-                      *//*customer.sort((a, b) => b.id.compareTo(a.id));*//*
+                      /*customer.sort((a, b) => b.id.compareTo(a.id));*/
                       ascending = false;
                     } else {
                       customer.sort((a, b) => a.name.compareTo(b.name));
-                      *//*customer.sort((a, b) => a.id.compareTo(b.id));*//*
+                      /*customer.sort((a, b) => a.id.compareTo(b.id));*/
                       ascending = true;
                     }
                   });
@@ -677,6 +345,7 @@ class BalanceRequestState extends State<BalanceRequest>{
             return CircularProgressIndicator();
           }),
     );
-  }*/
-
+  }
 }
+
+

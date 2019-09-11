@@ -3,6 +3,7 @@ import 'package:smartinventory/chart.dart';
 import 'package:smartinventory/customerForm.dart';
 import 'package:smartinventory/newMain.dart';
 import 'package:smartinventory/productList.dart';
+import 'package:smartinventory/vendorForm.dart';
 import './page.dart';
 import './profile.dart';
 import 'productForm.dart';
@@ -39,32 +40,24 @@ class _HomePageState extends State<HomePage> {
           child: new ListView(
             children: <Widget>[
               new UserAccountsDrawerHeader(
-                accountEmail: new Text("kakadedhiraj58@gmail.com"),
-                accountName: new Text("Dhiraj Kakade"),
+                accountEmail: new Text("Sukhakarta@gmail.com"),
+                accountName: new Text("Sukhakarta"),
                 currentAccountPicture: new GestureDetector(
                   child: new CircleAvatar(
-                    backgroundImage: new NetworkImage(currentProfilePic),
+                    backgroundImage: new AssetImage("asstes/aadi.JPG"),
                   ),
                   onTap: () => print("This is your current account."),
                 ),
-                otherAccountsPictures: <Widget>[
-                  new GestureDetector(
-                    child: new CircleAvatar(
-                      backgroundImage: new NetworkImage(otherProfilePic),
-                    ),
-                    onTap: () => switchAccounts(),
-                  ),
-                ],
                 decoration: new BoxDecoration(
                     image: new DecorationImage(
-                        image: new NetworkImage(
-                            "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
+                        image: AssetImage("asstes/background.jpg"),
                         fit: BoxFit.fill)),
                 onDetailsPressed: () => Navigator.of(context).push(
                     new MaterialPageRoute(
                         builder: (BuildContext context) => new Profile())),
               ),
               ExpansionTile(
+                backgroundColor: Color(0xFFD6D6D6),
                 title: Text("Master"),
                 children: <Widget>[
                   new Divider(),
@@ -74,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         Navigator.of(context).pop();
                         Navigator.of(context).push(new MaterialPageRoute(
-                            builder: (BuildContext context) => new NewMain()));
+                            builder: (BuildContext context) => new VendorForm()));
                       }),
                   new Divider(),
                   new ListTile(
@@ -88,6 +81,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               ExpansionTile(
+                backgroundColor: Color(0xFFD6D6D6),
                 title: Text("Sales Transaction"),
                 children: <Widget>[
                   new Divider(),
@@ -101,99 +95,109 @@ class _HomePageState extends State<HomePage> {
                       }),
                 ],
               ),
-              ExpansionTile(title: Text('Account Transaction'), children: <
-                  Widget>[
-                new Divider(),
-                new ListTile(
-                    title: new Text("Customer Payment"),
+              ExpansionTile(
+                  backgroundColor: Color(0xFFD6D6D6),
+                  title: Text('Account Transaction'),
+                  children: <Widget>[
+                    new Divider(),
+                    new ListTile(
+                        title: new Text("Customer Payment"),
 //                  trailing: new Icon(Icons.arrow_upward),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (BuildContext context) => new NewMain()));
-                    }),
-                new Divider(),
-                new ListTile(
-                    title: new Text("Vendor Payment"),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  new NewMain()));
+                        }),
+                    new Divider(),
+                    new ListTile(
+                        title: new Text("Vendor Payment"),
 //                  trailing: new Icon(Icons.arrow_right),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              new ProductList()));
-                    }),
-                new Divider(),
-                new ListTile(
-                    title: new Text("Fund Transfer"),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  new ProductList()));
+                        }),
+                    new Divider(),
+                    new ListTile(
+                        title: new Text("Fund Transfer"),
 //                  trailing: new Icon(Icons.arrow_upward),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (BuildContext context) => new Page("Home")));
-                    }),
-                new Divider(),
-                new ListTile(
-                    title: new Text("Incone/Expenses"),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  new Page("Home")));
+                        }),
+                    new Divider(),
+                    new ListTile(
+                        title: new Text("Incone/Expenses"),
 //                  trailing: new Icon(Icons.arrow_upward),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (BuildContext context) => new Page("Home")));
-                    }),
-                new Divider(),
-                new ListTile(
-                    title: new Text("Cash/Bank Book"),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  new Page("Home")));
+                        }),
+                    new Divider(),
+                    new ListTile(
+                        title: new Text("Cash/Bank Book"),
 //                  trailing: new Icon(Icons.arrow_upward),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (BuildContext context) => new ChartPage()));
-                    }),
-                new Divider(),
-                new ListTile(
-                    title: new Text("Customer Statement"),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  new ChartPage()));
+                        }),
+                    new Divider(),
+                    new ListTile(
+                        title: new Text("Customer Statement"),
 //                  trailing: new Icon(Icons.arrow_right),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (BuildContext context) => new NewList()));
-                    }),
-                new Divider(),
-                new ListTile(
-                  title: new Text("Balance Transfer"),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  new NewList()));
+                        }),
+                    new Divider(),
+                    new ListTile(
+                      title: new Text("Balance Transfer"),
 //                trailing: new Icon(Icons.cancel),
-                  onTap: () => Navigator.pop(context),
-                ),
-              ]),
-              ExpansionTile(title: Text('Reports'), children: <Widget>[
-                new Divider(),
-                new ListTile(
-                  title: new Text('Sales & Collection'),
-                  onTap: () => Navigator.pop(context),
-                ),
-                new Divider(),
-                new ListTile(
-                  title: new Text('Outstanding Report'),
-                  onTap: () => Navigator.pop(context),
-                ),
-                new Divider(),
-                new ListTile(
-                  title: new Text('Sales Details Report'),
-                  onTap: () => Navigator.pop(context),
-                ),
-                new Divider(),
-                new ListTile(
-                  title: new Text('Daily Cash Report'),
-                  onTap: () => Navigator.pop(context),
-                ),
-                new Divider(),
-                new ListTile(
-                  title: new Text('Sales Register'),
-                  onTap: () => Navigator.pop(context),
-                ),
-              ]),
+                      onTap: () => Navigator.pop(context),
+                    ),
+                  ]),
+              ExpansionTile(
+                  backgroundColor: Color(0xFFD6D6D6),
+                  title: Text('Reports'),
+                  children: <Widget>[
+                    new Divider(),
+                    new ListTile(
+                      title: new Text('Sales & Collection'),
+                      onTap: () => Navigator.pop(context),
+                    ),
+                    new Divider(),
+                    new ListTile(
+                      title: new Text('Outstanding Report'),
+                      onTap: () => Navigator.pop(context),
+                    ),
+                    new Divider(),
+                    new ListTile(
+                      title: new Text('Sales Details Report'),
+                      onTap: () => Navigator.pop(context),
+                    ),
+                    new Divider(),
+                    new ListTile(
+                      title: new Text('Daily Cash Report'),
+                      onTap: () => Navigator.pop(context),
+                    ),
+                    new Divider(),
+                    new ListTile(
+                      title: new Text('Sales Register'),
+                      onTap: () => Navigator.pop(context),
+                    ),
+                  ]),
               new ListTile(
-                title: new Text('Balance Request'),
+                  title: new Text('Balance Request'),
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(new MaterialPageRoute(
@@ -346,7 +350,7 @@ class CategoryCard extends StatelessWidget {
               } else if (titles == "Available Balance") {
                 Navigator.of(context).pushNamed('/availableBalance');
               } else if (titles == "Balance Request") {
-                Navigator.of(context).pushNamed('/addfeedback');
+                Navigator.of(context).pushNamed('/balanceRequest');
               }
             },
             child: Padding(

@@ -1,51 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 import 'database/databaseFile.dart';
-class ContactList1 extends StatelessWidget {
+
+class TodayCollectionList extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Contacts"),
-        ),
-        body: new ContactList(kContacts));
-  }
+  _TodayCollectionListState createState() => _TodayCollectionListState();
 }
 
-const kContacts = const <Contact>[
+class _TodayCollectionListState extends State<TodayCollectionList> {
+  var DbHelper;
 
-  const Contact(
-      fullName: 'Romain Hoogmoed', email: 'romain.hoogmoed@example.com'),
-  const Contact(fullName: 'Emilie Olsen', email: 'emilie.olsen@example.com')
-];
-
-class ContactList extends StatelessWidget {
-  final List<Contact> _contacts;
-
-  ContactList(this._contacts);
+  @override
+  void initState() {
+    super.initState();
+    DbHelper = dbHelper();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return new ListView.builder(
-      padding: new EdgeInsets.symmetric(vertical: 8.0),
-      itemBuilder: (context, index) {
-        return new _ContactListItem(_contacts[index]);
-      },
-      itemCount: _contacts.length,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Today\'s collection List'),
+      ),
+      body: FutureBuilder<List<TodaysCollection>>(
+        future: DbHelper.getTodaysCollection(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Center(child: CircularProgressIndicator());
+
+          return ListView(
+            children: snapshot.data
+                .map((todaysCollection) =>
+                Card(
+                  elevation: 5,
+                  child: Slidable(
+                    actionPane: SlidableBehindActionPane(),
+                    actionExtentRatio: 0.20,
+                    child: Container(
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(5.0),
+                          title: Text('Name: '+todaysCollection.customerName),
+                          subtitle: Text( 'Contact : '+todaysCollection.amount.toString() +'\nAddress: '+ todaysCollection.date),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            child: Text(todaysCollection.customerName[0],
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.black,
+                                )),
+                          ),
+                          onTap: () {
+
+                          },
+                        )
+                    ),
+                    actions: <Widget>[],
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Delete',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () {
+                        /*  id=customer.id.toString();*/
+
+                        },
+                      ),
+                    ],
+                  ),
+                ))
+                .toList(),
+          );
+        },
+      ),
     );
   }
-}
-
-class _ContactListItem extends ListTile {
-    _ContactListItem(Contact contact)
-        : super(
-        title: new Text(contact.fullName),
-        subtitle: new Text(contact.email,),
-        leading: new CircleAvatar(child: new Text(contact.fullName[0])));
-}
-
-class Contact {
-  final String fullName;
-  final String email;
-
-  const Contact({this.fullName, this.email});
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../customerForm.dart';
+
 class AccountBalance extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => AccountBalanceState();
@@ -196,6 +198,15 @@ class AccountBalanceState extends State<AccountBalance> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+            return new CustomerForm();
+          }));
+        },
+        child: Icon(Icons.add),
       ),
     );
   }

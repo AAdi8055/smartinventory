@@ -45,46 +45,57 @@ class NewListState extends State<NewList> {
 
           return ListView(
             children: snapshot.data
-                .map((customer) => Card(
-                      elevation: 5,
-                      child: Slidable(
-                        actionPane: SlidableBehindActionPane(),
-                        actionExtentRatio: 0.25,
-                        child: Container(
-                          child: ListTile(
-                            title: Text(customer.name),
-                            subtitle: Text(customer.email),
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.red,
-                              child: Text(customer.name[0],
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    color: Colors.white,
-                                  )),
-                            ),
-                            onTap: (){
-
-                             /* Navigator.of(context).push(new MaterialPageRoute(
-                                  builder: (BuildContext context) => new CustomerForm()));
-*/
-                            },
-                          )
-                        ),
-                        actions: <Widget>[],
-                        secondaryActions: <Widget>[
-                          IconSlideAction(
-                            caption: 'Delete',
-                            color: Colors.red,
-                            icon: Icons.delete,
-                            onTap: () {
-                              DbHelper.deleteCustomer(customer.id);
-                              showToast('Delted Successfully');
-                              refreshList();
-                            },
+                .map((customer) =>
+                Card(
+                  elevation: 5,
+                  child: Slidable(
+                    actionPane: SlidableBehindActionPane(),
+                    actionExtentRatio: 0.25,
+                    child: Container(
+                        child: ListTile(
+                          title: Text(customer.name),
+                          subtitle: Text(customer.email),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.red,
+                            child: Text(customer.name[0],
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                )),
                           ),
-                        ],
+                          onTap: () {
+                            setState(() {
+                              Navigator.pop(
+                                  context);
+                              Navigator.push(
+                                  context,
+                                  new MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                      new CustomerForm(
+                                          id: customer.id.toString(),
+                                          name: customer.name,
+                                          email: customer.email,
+                                          address: customer.address,
+                                          contact: customer.contact)));
+                            });
+                          },
+                        )
+                    ),
+                    actions: <Widget>[],
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Delete',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () {
+                          DbHelper.deleteCustomer(customer.id);
+                          showToast('Delted Successfully');
+                          refreshList();
+                        },
                       ),
-                    ))
+                    ],
+                  ),
+                ))
                 .toList(),
           );
         },
@@ -96,12 +107,12 @@ class NewListState extends State<NewList> {
             return new CustomerForm();
           }));
         },
-        tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
     );
   }
-  void showToast(String msg){
+
+  void showToast(String msg) {
     Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_SHORT,

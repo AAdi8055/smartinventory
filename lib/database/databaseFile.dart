@@ -107,6 +107,12 @@ class dbHelper {
         "create table $PRODUCT_TABLE ($ID integer primary key , $Product_NAME text, $DESC text, $COST text, $UNIT text, $QUANTITY text)");
     await db.execute(
         "create table $CUSTOMER_TABLE ($ID integer primary key ,$CUSTOMER_NAME text,$CUSTOMER_ADDRESS text, $CUSTOMER_CONTACT text, $CUSTOMER_EMAIL text)");
+    await db.execute(
+        "create table $TODAYSCOLLECTION_TABLE ($ID integer primary key ,$CCUSTOMER_NAME text,$CUSTOMER_AMOUNT int, $CUSTOMER_DATE text)");
+    await db.execute(
+        "create table $MYBALANCE_TABLE ($ID integer primary key ,$MYBALANCE_AMOUNT int, $MYBALANCE_BALANCE int)");
+    await db.execute(
+        "create table $BALANCEREQ_TABLE ($ID integer primary key ,$BALANCEREQ_CUSTOMERNAME text, $BALANCEREQ_AMOUNT int,$BALANCEREQ_BALANCE int,$BALANCEREQ_PAIDAMOUNT int )");
   }
 
   Future<Product> saveProduct(Product product) async {
@@ -260,6 +266,47 @@ class dbHelper {
     return await dbClient
         .delete(PRODUCT_TABLE, where: ' $ID = ?', whereArgs: [id]);
   }
+
+  //Today collection Table filed start
+  static const String TODAYSCOLLECTION_TABLE = 'Todays_collection';
+  static const String CCUSTOMER_NAME = 'customername';
+  static const String CUSTOMER_AMOUNT = 'amount';
+  static const String CUSTOMER_DATE = 'date';
+
+  //Today collection Table filed end
+  Future<List<TodaysCollection>> getTodaysCollection() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(TODAYSCOLLECTION_TABLE, columns: [
+      ID,
+      CCUSTOMER_NAME,
+      CUSTOMER_AMOUNT,
+      CUSTOMER_DATE
+    ]);
+    List<TodaysCollection> todayCollection = [];
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        todayCollection.add(TodaysCollection.fromMap(maps[i]));
+      }
+    }
+    return todayCollection;
+  }
+  Future<TodaysCollection> saveCollection(TodaysCollection todayCollection) async {
+    var dbClient = await db;
+    todayCollection.id = await dbClient.insert(TODAYSCOLLECTION_TABLE, todayCollection.toMap());
+    return todayCollection;
+  }
+  //Today collection Table filed start
+  static const String MYBALANCE_TABLE = 'My_balance';
+  static const String MYBALANCE_AMOUNT = 'amount';
+  static const String MYBALANCE_BALANCE = 'balance';
+
+  static const String BALANCEREQ_TABLE = 'Balance_request';
+  static const String BALANCEREQ_CUSTOMERNAME = 'customername';
+  static const String BALANCEREQ_AMOUNT = 'amount';
+  static const String BALANCEREQ_BALANCE = 'balance';
+  static const String BALANCEREQ_PAIDAMOUNT = 'paid_amount';
+
+
 }
 
 class Invoice {
@@ -281,4 +328,63 @@ class Invoice {
     };
     return map;
   }
+}
+
+class TodaysCollection {
+  int id;
+  String customerName;
+  int amount;
+  String date;
+
+  TodaysCollection(
+    this.id,
+    this.customerName,
+    this.amount,
+    this.date,
+  );
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      'id': id,
+      'customername': customerName,
+      'amount': amount,
+      'date': date,
+    };
+    return map;
+  }
+
+  TodaysCollection.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    customerName = map['customername'];
+    amount = map['amount'];
+    date = map['date'];
+  }
+}
+class MyBalance{
+
+  int id;
+  String date;
+  int balance;
+  int amount;
+  MyBalance(this.id, this.date, this.balance, this.amount);
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      'id': id,
+      'date': date,
+      'balance': balance,
+      'amount': amount,
+    };
+    return map;
+  }
+
+  MyBalance.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    date = map['date'];
+    amount = map['amount'];
+    balance = map['balance'];
+
+  }
+
+
+
 }
