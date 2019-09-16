@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/routePages/accountBalance.dart';
 import 'package:smartinventory/routePages/availableBalance.dart';
-import 'package:smartinventory/routePages/balanceRequest.dart';
+import 'package:smartinventory/routePages/balanceRequestForm.dart';
+import 'package:smartinventory/routePages/balanceRequestList.dart';
 import 'package:smartinventory/routePages/todaysBalance.dart';
 import 'package:smartinventory/routePages/todaysCollection.dart';
 import 'package:smartinventory/routePages/totalOutstanding.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         '/totalOutStanding': (BuildContext context) => new TotalOutstanding(),
         '/accountBalance': (BuildContext context) => new AccountBalance(),
         '/availableBalance': (BuildContext context) => new AvailableBalance(),
-        '/balanceRequest': (BuildContext context) => new BalanceRequest(),
+        '/balanceRequest': (BuildContext context) => new BalanceRequestList(),
       },
       home: new MyHomePage(),
     );

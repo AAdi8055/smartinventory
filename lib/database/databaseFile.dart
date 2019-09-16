@@ -110,7 +110,7 @@ class dbHelper {
     await db.execute(
         "create table $TODAYSCOLLECTION_TABLE ($ID integer primary key ,$CCUSTOMER_NAME text,$CUSTOMER_AMOUNT int, $CUSTOMER_DATE text)");
     await db.execute(
-        "create table $MYBALANCE_TABLE ($ID integer primary key ,$MYBALANCE_AMOUNT int, $MYBALANCE_BALANCE int)");
+        "create table $MYBALANCE_TABLE ($ID integer primary key ,$MYBALANCE_AMOUNT int, $MYBALANCE_BALANCE int,$MYBALANCE_DATE text)");
     await db.execute(
         "create table $BALANCEREQ_TABLE ($ID integer primary key ,$BALANCEREQ_CUSTOMERNAME text, $BALANCEREQ_AMOUNT int,$BALANCEREQ_BALANCE int,$BALANCEREQ_PAIDAMOUNT int )");
   }
@@ -295,38 +295,117 @@ class dbHelper {
     todayCollection.id = await dbClient.insert(TODAYSCOLLECTION_TABLE, todayCollection.toMap());
     return todayCollection;
   }
+  Future<MyBalance> saveMybalance(MyBalance myBalance) async {
+    var dbClient = await db;
+    myBalance.id = await dbClient.insert(MYBALANCE_TABLE, myBalance.toMap());
+    return myBalance;
+  }
+  Future<List<MyBalance>> getMyBalance() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(MYBALANCE_TABLE, columns: [
+      ID,
+      MYBALANCE_DATE,
+      MYBALANCE_AMOUNT,
+      MYBALANCE_BALANCE,
+    ]);
+    List<MyBalance> myBalance = [];
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        myBalance.add(MyBalance.fromMap(maps[i]));
+      }
+    }
+    return myBalance;
+  }
+  Future<int> updateMybalance(MyBalance mybalance) async {
+    var dbClient = await db;
+    return await dbClient.update(MYBALANCE_TABLE, mybalance.toMap(),
+        where: '$ID=?', whereArgs: [mybalance.id]);
+  }
+  Future<int> deleteMybalance(int id) async {
+    var dbClient = await db;
+    return await dbClient
+        .delete(MYBALANCE_TABLE, where: ' $ID = ?', whereArgs: [id]);
+  }
   //Today collection Table filed start
   static const String MYBALANCE_TABLE = 'My_balance';
   static const String MYBALANCE_AMOUNT = 'amount';
   static const String MYBALANCE_BALANCE = 'balance';
+  static const String MYBALANCE_DATE = 'date';
+
 
   static const String BALANCEREQ_TABLE = 'Balance_request';
   static const String BALANCEREQ_CUSTOMERNAME = 'customername';
   static const String BALANCEREQ_AMOUNT = 'amount';
   static const String BALANCEREQ_BALANCE = 'balance';
-  static const String BALANCEREQ_PAIDAMOUNT = 'paid_amount';
+  static const String BALANCEREQ_PAIDAMOUNT = 'paidAmount';
 
+  Future<BalanceRequest> saveBalanceRequest(BalanceRequest balanceRequest) async {
+    var dbClient = await db;
+    balanceRequest.id = await dbClient.insert(BALANCEREQ_TABLE, balanceRequest.toMap());
+    return balanceRequest;
+  }
+  Future<List<BalanceRequest>> getBalanceRequest() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(BALANCEREQ_TABLE, columns: [
+      ID,
+      BALANCEREQ_PAIDAMOUNT,
+      BALANCEREQ_BALANCE,
+      BALANCEREQ_AMOUNT,
+      BALANCEREQ_CUSTOMERNAME,
+    ]);
+    List<BalanceRequest> balanceRequest = [];
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        balanceRequest.add(BalanceRequest.fromMap(maps[i]));
+      }
+    }
+    return balanceRequest;
+  }
+  Future<int> deleteBalanceRequest(int id) async {
+    var dbClient = await db;
+    return await dbClient
+        .delete(BALANCEREQ_TABLE, where: ' $ID = ?', whereArgs: [id]);
+  }
+  Future calculateTotalCollection() async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery("SELECT SUM($CUSTOMER_AMOUNT) as Total FROM $TODAYSCOLLECTION_TABLE");
+    print(result.toList());
+    return result;
+  }
+  Future calculateTotalBalanceReq() async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery("SELECT SUM($BALANCEREQ_AMOUNT) as Total FROM $BALANCEREQ_TABLE");
+    print(result.toList());
+    return result;
+  }
 
 }
 
-class Invoice {
+class BalanceRequest {
   int id;
-  String productName;
-  String quantity;
-  String cost;
-  String total;
+  String customerName;
+  int amount;
+  int balance;
+  int paidAmount;
 
-  Invoice(this.id, this.productName, this.quantity, this.cost, this.total);
+  BalanceRequest(this.id, this.customerName, this.balance, this.amount, this.paidAmount);
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'id': id,
-      'productName': productName,
-      'quantity': quantity,
-      'cost': cost,
-      'total': total
+      'customerName': customerName,
+      'amount': amount,
+      'balance': balance,
+      'paidAmount': paidAmount
     };
     return map;
+  }
+  BalanceRequest.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    customerName = map['customername'];
+    amount = map['amount'];
+    balance = map['balance'];
+    paidAmount = map['paidAmount'];
   }
 }
 

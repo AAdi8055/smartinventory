@@ -151,12 +151,18 @@ class TodayCollectionState extends State<TodayCollection> {
               validator: (val) => val.length == 0 ? 'Enter Amount' : null,
               onSaved: (val) => amount = int.parse(val),
             ),
-            FlatButton(
-                onPressed: () => _selectDate(context),
-                padding: EdgeInsets.only(top: 20.0),
-                child: formattedDate != null
-                    ? Text(formattedDate.toString())
-                    :  Text('Select date \n')),
+            Container(
+              padding: EdgeInsets.only(top: 10.0),
+              width: 300,
+              child: RaisedButton(
+
+                color: Colors.white30,
+                  onPressed: () => _selectDate(context),
+                  child: formattedDate != null
+                      ? Text(formattedDate.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 40.0),)
+                      : Text('Select date',textAlign: TextAlign.center,style: TextStyle(fontSize: 40.0),)),
+            ),
+
             RaisedButton(
               onPressed: validate,
               child: Text('Save'),

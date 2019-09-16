@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:smartinventory/database/databaseFile.dart';
 
 import '../customerForm.dart';
 
@@ -8,205 +10,69 @@ class AccountBalance extends StatefulWidget {
 }
 
 class AccountBalanceState extends State<AccountBalance> {
+  var DbHelper;
+
+  @override
+  void initState() {
+    super.initState();
+    DbHelper = dbHelper();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text('Account Balance'),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(top: 10),
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Table(
-            border: TableBorder.all(),
-            defaultVerticalAlignment: TableCellVerticalAlignment.top,
-            children: <TableRow>[
-              ///First table row with 3 children
-              TableRow(children: <Widget>[
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    width: 50.0,
-                    height: 20.0,
-                    child: Center(
-                      child: Text(
-                        "Sr No",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold ,
-                          fontSize: 6.0,
-                        ),
-                      ),
+      body: FutureBuilder<List<BalanceRequest>>(
+        future: DbHelper.getBalanceRequest(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Center(child: CircularProgressIndicator());
+
+          return ListView(
+            padding: EdgeInsets.only(top: 10),
+            children: snapshot.data
+                .map((balanceRequest) =>
+                Card(
+                  elevation: 5,
+                  child: Slidable(
+                    actionPane: SlidableBehindActionPane(),
+                    actionExtentRatio: 0.20,
+                    child: Container(
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(10.0),
+                          title: Text('Name: '+balanceRequest.customerName+'\nBalance : '+balanceRequest.amount.toString()),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            child: Text(balanceRequest.customerName[0],
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.black,
+                                )),
+                          ),
+                          onTap: () {
+
+                          },
+                        )
                     ),
-                  ),
-                ),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    width: 50.0,
-                    height: 20.0,
-                    child: Center(
-                      child: Text(
-                        "Name",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold ,
-                          color: Colors.black,
-                          fontSize: 6.0,
-                        ),
+                    actions: <Widget>[],
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Delete',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () {
+                          /*  id=customer.id.toString();*/
+
+                        },
                       ),
-                    ),
+                    ],
                   ),
-                ),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    width: 50.0,
-                    height: 20.0,
-                    child: Center(
-                      child: Text(
-                        "Current Balance",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold ,
-                          color: Colors.black,
-                          fontSize: 6.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ]),
-              TableRow(children: <Widget>[
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    width: 50.0,
-                    height: 20.0,
-                    child: Center(
-                      child: Text(
-                        "1",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 6.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    width: 50.0,
-                    height: 20.0,
-                    child: Center(
-                      child: Text(
-                        "Yogesh Gangadhar Kadam",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 6.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    width: 50.0,
-                    height: 20.0,
-                    child: Center(
-                      child: Text(
-                        "100054 rs",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 6.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ]),
-              TableRow(children: <Widget>[
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    width: 50.0,
-                    height: 20.0,
-                    child: Center(
-                      child: Text(
-                        "2",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 6.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    width: 50.0,
-                    height: 20.0,
-                    child: Center(
-                      child: Text(
-                        "SBI Bank (Sukhakarta)",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 6.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    width: 50.0,
-                    height: 20.0,
-                    child: Center(
-                      child: Text(
-                        "661035.78 rs",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 6.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ]),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
-            return new CustomerForm();
-          }));
+                ))
+                .toList(),
+          );
         },
-        child: Icon(Icons.add),
       ),
     );
   }

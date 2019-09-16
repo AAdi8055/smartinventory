@@ -2,22 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smartinventory/database/databaseFile.dart';
+import 'package:smartinventory/routePages/balanceRequestForm.dart';
 import '../myBalanceAdd.dart';
 
-class AvailableBalance extends StatefulWidget {
+class BalanceRequestList extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => AvailableBalanceState();
+  State<StatefulWidget> createState() => BalanceRequestListState();
 }
 
-class AvailableBalanceState extends State<AvailableBalance> {
-  Future<List<MyBalance>> myBalance;
+class BalanceRequestListState extends State<BalanceRequestList> {
+  Future<List<BalanceRequest>> balanceRequest;
 
   var _currentUser;
 
   String id;
-  String date;
+  String name;
   String amount;
   String balance;
+  String paidAmount;
 
   clearName() {
     _currentUser = null;
@@ -37,7 +39,7 @@ class AvailableBalanceState extends State<AvailableBalance> {
 
   refreshList() {
     setState(() {
-      myBalance = DbHelper.getMyBalance();
+      balanceRequest = DbHelper.getBalanceRequest();
     });
   }
 
@@ -45,10 +47,10 @@ class AvailableBalanceState extends State<AvailableBalance> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Available Balance'),
+        title: Text('Balance Request'),
       ),
-      body: FutureBuilder<List<MyBalance>>(
-        future: DbHelper.getMyBalance(),
+      body: FutureBuilder<List<BalanceRequest>>(
+        future: DbHelper.getBalanceRequest(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return Center(child: CircularProgressIndicator());
@@ -56,50 +58,55 @@ class AvailableBalanceState extends State<AvailableBalance> {
           return ListView(
             padding: EdgeInsets.only(top: 10),
             children: snapshot.data
-                .map((myBalance) =>
-                Card(
-                  elevation: 5,
-                  child: Slidable(
-                    actionPane: SlidableBehindActionPane(),
-                    actionExtentRatio: 0.20,
-                    child: Container(
-                        child: ListTile(
-                          contentPadding: EdgeInsets.all(10.0),
-                          title: Text('Date: '+myBalance.date+'\nAmount : '+myBalance.amount.toString()+'\nBalance : '+myBalance.balance.toString()),
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            child: Text(myBalance.date[0],
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.black,
-                                )),
+                .map((balanceRequest) => Card(
+              elevation: 5,
+              child: Slidable(
+                actionPane: SlidableBehindActionPane(),
+                actionExtentRatio: 0.20,
+                child: Container(
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(10.0),
+                      title: Text('Name : ' +
+                          balanceRequest.customerName
                           ),
-                          onTap: () {
-                            setState(() {
-                              _currentUser = myBalance.id;
-                              date = myBalance.date;
-                              amount = myBalance.amount.toString();
-                              balance = myBalance.balance.toString();
-                              Popup();
-                            });
-                          },
-                        )
-                    ),
-                    actions: <Widget>[],
-                    secondaryActions: <Widget>[
-                      IconSlideAction(
-                        caption: 'Delete',
-                        color: Colors.red,
-                        icon: Icons.delete,
-                        onTap: () {
-                            DbHelper.deleteMybalance(myBalance.id);
-                            showToast('Delted Successfully');
-                            refreshList();
-                        },
+                      subtitle: Text('Amount : ' +
+                          balanceRequest.amount.toString() +
+                          '\nBalance : ' +
+                          balanceRequest.balance.toString() +
+                          '\nPaid Amounr : ' +
+                          balanceRequest.paidAmount.toString() ),
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        child: Text(balanceRequest.customerName[0],
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black,
+                            )),
                       ),
-                    ],
+                      onTap: () {
+                        _currentUser = balanceRequest.id;
+                        name= balanceRequest.customerName;
+                        paidAmount= balanceRequest.paidAmount.toString();
+                        amount = balanceRequest.amount.toString();
+                        balance = balanceRequest.balance.toString();
+                        Popup();
+                      },
+                    )),
+                actions: <Widget>[],
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: 'Delete',
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () {
+                      DbHelper.deleteBalanceRequest(balanceRequest.id);
+                      showToast('Delted Successfully');
+                      refreshList();
+                    },
                   ),
-                ))
+                ],
+              ),
+            ))
                 .toList(),
           );
         },
@@ -109,14 +116,14 @@ class AvailableBalanceState extends State<AvailableBalance> {
           Navigator.of(context).pop();
           Navigator.of(context)
               .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
-            return new AddMyBalance();
+            return new BalanceRequestForm();
           }));
         },
         child: Icon(Icons.add),
       ),
     );
   }
-  void showToast(String msg){
+  void showToast(String msg) {
     Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_SHORT,
@@ -124,10 +131,9 @@ class AvailableBalanceState extends State<AvailableBalance> {
         timeInSecForIos: 1,
         backgroundColor: Colors.grey,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
+        fontSize: 16.0);
   }
-  SingleChildScrollView dataTable(List<MyBalance> myBalance) {
+  SingleChildScrollView dataTable(List<BalanceRequest> balanceRequest) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
@@ -149,11 +155,11 @@ class AvailableBalanceState extends State<AvailableBalance> {
                   print("$i $b");
                   setState(() {
                     if (ascending) {
-                      myBalance.sort((a, b) => b.date.compareTo(a.date));
+                      balanceRequest.sort((a, b) => b.customerName.compareTo(a.customerName));
                       /*customer.sort((a, b) => b.id.compareTo(a.id));*/
                       ascending = false;
                     } else {
-                      myBalance.sort((a, b) => a.date.compareTo(b.date));
+                      balanceRequest.sort((a, b) => a.customerName.compareTo(b.customerName));
                       /*customer.sort((a, b) => a.id.compareTo(b.id));*/
                       ascending = true;
                     }
@@ -166,59 +172,79 @@ class AvailableBalanceState extends State<AvailableBalance> {
               DataColumn(
                 label: Text('Balance'),
               ),
+              DataColumn(
+                label: Text('Paid Amount'),
+              ),
             ],
-            rows: myBalance
+            rows: balanceRequest
                 .map(
-                  (myBalance) => DataRow(cells: [
+                  (balanceRequest) => DataRow(cells: [
+                DataCell(
+                  FittedBox(
+                      fit: BoxFit.contain,
+                      child: Container(
+                        width: 20.0,
+                        child: Center(child: Text(balanceRequest.id.toString())),
+                      )),
+                ),
+                DataCell(
+                  Text(balanceRequest.customerName),
+                  onTap: () {
+                    setState(() {
+                      _currentUser = balanceRequest.id;
+                      name= balanceRequest.customerName;
+                      paidAmount= balanceRequest.paidAmount.toString();
+                      amount = balanceRequest.amount.toString();
+                      balance = balanceRequest.balance.toString();
+                      Popup();
+                    });
+                  },
+                  placeholder: false,
+                ),
+                DataCell(
+                  Text(balanceRequest.amount.toString()),
+                  onTap: () {
+                    setState(() {
+                      _currentUser = balanceRequest.id;
+                      name= balanceRequest.customerName;
+                      paidAmount= balanceRequest.paidAmount.toString();
+                      amount = balanceRequest.amount.toString();
+                      balance = balanceRequest.balance.toString();
+                      Popup();
+                    });
+                  },
+                  placeholder: false,
+                ),
+                DataCell(
+                  Text(balanceRequest.balance.toString()),
+                  onTap: () {
+                    setState(() {
+                      _currentUser = balanceRequest.id;
+                      name= balanceRequest.customerName;
+                      paidAmount= balanceRequest.paidAmount.toString();
+                      amount = balanceRequest.amount.toString();
+                      balance = balanceRequest.balance.toString();
+                      Popup();
+                    });
+                  },
+                  placeholder: false,
+                ),
                     DataCell(
-                      FittedBox(
-                          fit: BoxFit.contain,
-                          child: Container(
-                            width: 20.0,
-                            child: Center(child: Text(myBalance.id.toString())),
-                          )),
-                    ),
-                    DataCell(
-                      Text(myBalance.date),
+                      Text(balanceRequest.paidAmount.toString()),
                       onTap: () {
                         setState(() {
-                          _currentUser = myBalance.id;
-                          date = myBalance.date;
-                          amount = myBalance.amount.toString();
-                          balance = myBalance.balance.toString();
+                          _currentUser = balanceRequest.id;
+                          name= balanceRequest.customerName;
+                          paidAmount= balanceRequest.paidAmount.toString();
+                          amount = balanceRequest.amount.toString();
+                          balance = balanceRequest.balance.toString();
                           Popup();
                         });
                       },
                       placeholder: false,
                     ),
-                    DataCell(
-                      Text(myBalance.amount.toString()),
-                      onTap: () {
-                        setState(() {
-                          _currentUser = myBalance.id;
-                          date = myBalance.date;
-                          amount = myBalance.amount.toString();
-                          balance = myBalance.balance.toString();
-                          Popup();
-                        });
-                      },
-                      placeholder: false,
-                    ),
-                    DataCell(
-                      Text(myBalance.balance.toString()),
-                      onTap: () {
-                        setState(() {
-                          _currentUser = myBalance.id;
-                          date = myBalance.date;
-                          amount = myBalance.amount.toString();
-                          balance = myBalance.balance.toString();
-                          Popup();
-                        });
-                      },
-                      placeholder: false,
-                    ),
-                  ]),
-                )
+              ]),
+            )
                 .toList(),
           ),
         ),
@@ -229,7 +255,7 @@ class AvailableBalanceState extends State<AvailableBalance> {
   list() {
     return Expanded(
       child: FutureBuilder(
-          future: myBalance,
+          future: balanceRequest,
           // ignore: missing_return
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -275,7 +301,7 @@ class AvailableBalanceState extends State<AvailableBalance> {
                           Text(
                             "ALERT",
                             style:
-                                TextStyle(fontSize: 24.0, color: Colors.white),
+                            TextStyle(fontSize: 24.0, color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -308,12 +334,13 @@ class AvailableBalanceState extends State<AvailableBalance> {
                                   context,
                                   new MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          new AddMyBalance(
-                                              id: _currentUser.toString(),
-                                              date: date,
-                                              amount: amount,
-                                              balance: balance,
-                                              )));
+                                      new BalanceRequestForm(
+                                        id: _currentUser.toString(),
+                                        customerName: name,
+                                        amount: amount,
+                                        balance: balance,
+                                        paidAmount: paidAmount,
+                                      )));
                             });
                           }),
                       Padding(
