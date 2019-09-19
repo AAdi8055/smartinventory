@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "127347838670",
+    "firebase_url": "https://smart-inventroy.firebaseio.com",
+    "project_id": "smart-inventroy",
+    "storage_bucket": "smart-inventroy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127347838670:android:c37ccf0ad15d688d308a9f",
+        "android_client_info": {
+          "package_name": "com.unitglo.smartinventory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "127347838670-fd0k3mucv3q2kcr3laqoom2q3rf0k3dj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVWweZYLZYuuMrBxsU4INacraRvbaaKqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "127347838670-fd0k3mucv3q2kcr3laqoom2q3rf0k3dj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

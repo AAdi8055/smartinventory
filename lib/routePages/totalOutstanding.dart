@@ -40,34 +40,87 @@ class TotalOutstandingState extends State<TotalOutstanding> {
   @override
   Widget build(BuildContext context) {
     if (_totalCollection != null && _totalBalance != null) {
-      _totalOutstanding = (_totalCollection - _totalBalance);
+      _totalOutstanding = (_totalBalance - _totalCollection);
     }
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text('Total Outstanding'),
       ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top:50.0),
-              child: FlatButton(
-                onPressed: null,
-                child: Text(
-                  'Total Outstanding',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20),
+      body: Card(
+        elevation: 5.0,
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top :20.0),
+                child: FlatButton(
+                  onPressed: null,
+                  child: Container(
+                    height: 45,
+                    width: MediaQuery.of(context).size.width/1.2,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF0e81d1),
+                            Color(0xFF1f96f2)
+                          ],
+                        ),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(50)
+                        )
+                    ),
+
+                    child: Center(
+                      child: Text('Total Outstanding'.toUpperCase(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-            FlatButton(
-              onPressed: null,
-              child: _totalOutstanding != null
-                  ? Text(_totalOutstanding.toString(),style: TextStyle(fontSize: 20),)
-                  : Text("Waiting....",style: TextStyle(fontSize: 20)),
-            )
-          ],
+
+              Padding(
+                padding: const EdgeInsets.only(top :20.0),
+                child: FlatButton(
+                  onPressed:null,
+                  child: Container(
+                    height: 45,
+                    width: MediaQuery.of(context).size.width/1.2,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF0e81d1),
+                            Color(0xFF1f96f2)
+                          ],
+                        ),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(50)
+                        )
+                    ),
+
+                    child: Center(
+                      child: _totalOutstanding != null
+                          ? Text(_totalOutstanding.toString(),style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                      ),)
+                          : Text("Waiting....".toUpperCase(),style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                      ),),
+
+                      ),
+                    ),
+                  ),
+                ),
+
+
+            ],
+          ),
         ),
       ),
     );

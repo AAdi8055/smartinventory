@@ -1,9 +1,10 @@
+/*
 import 'package:flutter/material.dart';
 import './database/databaseFile.dart';
 import 'database/databaseFile.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'productForm.dart';
+import 'vendorForm1.dart';
 
 class ProductList extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class ProductList extends StatefulWidget {
 
 class ProductListState extends State<ProductList> {
   var DbHelper;
-  Future<List<Product>> product;
+  Future<List<Vendor>> product;
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class ProductListState extends State<ProductList> {
       appBar: AppBar(
         title: Text('Poduct List'),
       ),
-      body: FutureBuilder<List<Product>>(
+      body: FutureBuilder<List<Vendor>>(
         future: DbHelper.getProductData(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
@@ -64,9 +65,11 @@ class ProductListState extends State<ProductList> {
                                 )),
                           ),
                           onTap: () {
-                           /* Navigator.of(context).push(new MaterialPageRoute(
+                           */
+/* Navigator.of(context).push(new MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    new CustomerForm()));*/
+                                    new CustomerForm()));*//*
+
                           },
                         )),
                         actions: <Widget>[],
@@ -111,3 +114,4 @@ class ProductListState extends State<ProductList> {
     );
   }
 }
+*/

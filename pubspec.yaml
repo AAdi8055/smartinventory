@@ -20,6 +20,12 @@ dependencies:
   flutter:
     sdk: flutter
   sqflite: any
+  cloud_firestore:
+  firebase_storage:
+  firebase_auth: ^0.14.0+2
+  firebase_messaging: ^5.1.3
+  firebase_core:
+  shared_preferences: ^0.5.3+4
   path_provider: any
   path: any
   flutter_slidable: ^0.5.3

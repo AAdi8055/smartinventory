@@ -69,7 +69,8 @@ class BalanceRequestListState extends State<BalanceRequestList> {
                       title: Text('Name : ' +
                           balanceRequest.customerName
                           ),
-                      subtitle: Text('Amount : ' +
+                      subtitle: Text('Date : ' +
+                          balanceRequest.date +'\nAmount : ' +
                           balanceRequest.amount.toString() +
                           '\nBalance : ' +
                           balanceRequest.balance.toString() +

@@ -63,9 +63,6 @@ class TodaysBalanceState extends State<TodaysBalance> {
       );
       DbHelper.updateCustomer(e);
       showToast("Updated Successfully");
-      setState(() {
-        list();
-      });
       clearName();
       refreshList();
     }
@@ -97,13 +94,14 @@ class TodaysBalanceState extends State<TodaysBalance> {
           return ListView(
             padding: EdgeInsets.only(top: 10),
             children: snapshot.data
-                .map((myBalance) => Card(
-                      elevation: 5,
-                      child: Slidable(
-                        actionPane: SlidableBehindActionPane(),
-                        actionExtentRatio: 0.20,
-                        child: Container(
-                            child: ListTile(
+                .map((myBalance) =>
+                Card(
+                  elevation: 5,
+                  child: Slidable(
+                    actionPane: SlidableBehindActionPane(),
+                    actionExtentRatio: 0.20,
+                    child: Container(
+                        child: ListTile(
                           contentPadding: EdgeInsets.all(10.0),
                           title: Text('Date: ' +
                               myBalance.date +
@@ -123,123 +121,25 @@ class TodaysBalanceState extends State<TodaysBalance> {
 
                           },
                         )),
-                        actions: <Widget>[],
-                        secondaryActions: <Widget>[
-                          IconSlideAction(
-                            caption: 'Delete',
-                            color: Colors.red,
-                            icon: Icons.delete,
-                            onTap: () {
-                              DbHelper.deleteMybalance(myBalance.id);
-                              showToast('Delted Successfully');
-                              refreshList();
-                            },
-                          ),
-                        ],
+                    actions: <Widget>[],
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Delete',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () {
+                          DbHelper.deleteMybalance(myBalance.id);
+                          showToast('Delted Successfully');
+                          refreshList();
+                        },
                       ),
-                    ))
+                    ],
+                  ),
+                ))
                 .toList(),
           );
         },
       ),
-    );
-  }
-
-  SingleChildScrollView dataTable(List<MyBalance> myBalance) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: DataTable(
-            columnSpacing: 8,
-            sortAscending: ascending,
-            sortColumnIndex: 1,
-            columns: [
-              DataColumn(
-                label: Text('Sr no'),
-              ),
-              DataColumn(
-                label: Text('Date'),
-                numeric: false,
-                onSort: (i, b) {
-                  print("$i $b");
-                  setState(() {
-                    if (ascending) {
-                      myBalance.sort((a, b) => b.date.compareTo(a.date));
-                      /*customer.sort((a, b) => b.id.compareTo(a.id));*/
-                      ascending = false;
-                    } else {
-                      myBalance.sort((a, b) => a.date.compareTo(b.date));
-                      /*customer.sort((a, b) => a.id.compareTo(b.id));*/
-                      ascending = true;
-                    }
-                  });
-                },
-              ),
-              DataColumn(
-                label: Text('Amount'),
-              ),
-              DataColumn(
-                label: Text('Balance'),
-              ),
-            ],
-            rows: myBalance
-                .map(
-                  (myBalance) => DataRow(cells: [
-                    DataCell(
-                      FittedBox(
-                          fit: BoxFit.contain,
-                          child: Container(
-                            width: 20.0,
-                            child: Center(child: Text(myBalance.id.toString())),
-                          )),
-                    ),
-                    DataCell(
-                      Text(myBalance.date),
-                      onTap: () {
-                        setState(() {});
-                      },
-                      placeholder: false,
-                    ),
-                    DataCell(
-                      Text(myBalance.amount.toString()),
-                      onTap: () {
-                        setState(() {});
-                      },
-                      placeholder: false,
-                    ),
-                    DataCell(
-                      Text(myBalance.balance.toString()),
-                      onTap: () {
-                        setState(() {});
-                      },
-                      placeholder: false,
-                    ),
-                  ]),
-                )
-                .toList(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  list() {
-    return Expanded(
-      child: FutureBuilder(
-          future: myBalance,
-          // ignore: missing_return
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return dataTable(snapshot.data);
-            }
-            if (null == snapshot.data || snapshot.data.lenght == 0) {
-              return Text("No Data found");
-            }
-            return CircularProgressIndicator();
-          }),
     );
   }
 }

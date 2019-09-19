@@ -3,15 +3,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smartinventory/database/databaseFile.dart';
 import 'package:smartinventory/routePages/availableBalance.dart';
 
-class VendorForm extends StatefulWidget {
+class AddVendorForm extends StatefulWidget {
   final String id, name, email, address, contact;
 
-  VendorForm(
+  AddVendorForm(
       {Key key, this.id, this.name, this.email, this.address, this.contact})
       : super(key: key);
 
   @override
-  _VendorFormState createState() => _VendorFormState(
+  _AddVendorFormState createState() => _AddVendorFormState(
       id: this.id,
       name: this.name,
       email: this.email,
@@ -19,10 +19,10 @@ class VendorForm extends StatefulWidget {
       contact: this.contact);
 }
 
-class _VendorFormState extends State<VendorForm> {
+class _AddVendorFormState extends State<AddVendorForm> {
   String id, name, email, gstno, contact;
 
-  _VendorFormState({this.id, this.name, this.email, this.gstno, this.contact});
+  _AddVendorFormState({this.id, this.name, this.email, this.gstno, this.contact});
 
   String panno;
   String adharno;

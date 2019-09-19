@@ -7,10 +7,11 @@ import 'package:smartinventory/routePages/todaysCollection.dart';
 import 'database/databaseFile.dart';
 
 class AddMyBalance extends StatefulWidget {
-  final String id, date, amount, balance;
+  final String id, date, amount, balance,vname;
 
   AddMyBalance({
     Key key,
+    this.vname,
     this.id,
     this.date,
     this.amount,
@@ -19,14 +20,15 @@ class AddMyBalance extends StatefulWidget {
 
   @override
   _AddMyBalanceState createState() => _AddMyBalanceState(
-      id: this.id, date: this.date, amount: this.amount, balance: this.balance);
+      id: this.id, vname: this.vname,date: this.date, amount: this.amount, balance: this.balance);
 }
 
 class _AddMyBalanceState extends State<AddMyBalance> {
-  String id, date, amount, balance;
+  String id, date, amount, balance,vname;
 
   _AddMyBalanceState({
     this.id,
+    this.vname,
     this.date,
     this.amount,
     this.balance,
@@ -67,12 +69,14 @@ class _AddMyBalanceState extends State<AddMyBalance> {
     amount = '';
     id = '';
     date = '';
+    vname='';
   }
 
   @override
   void initState() {
     super.initState();
     DbHelper = dbHelper();
+
     if (id != null) {
       isUpdating = true;
       _currentUser = int.parse(id);
@@ -81,15 +85,24 @@ class _AddMyBalanceState extends State<AddMyBalance> {
       formattedDate = date;
     } else {
       isUpdating = false;
+      vname="";
     }
   }
 
   validate() {
+    if(formattedDate == null ){
+      showToast("Please enter Date");
+    }
+    else if(vname==""){
+      showToast("Please enter Name");
+    }
+    else
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
       if (isUpdating && id != null) {
         MyBalance e = MyBalance(
           _currentUser,
+          vname,
           date,
           int.parse(balance),
           int.parse(amount),
@@ -104,6 +117,7 @@ class _AddMyBalanceState extends State<AddMyBalance> {
       } else {
         MyBalance e = MyBalance(
           null,
+          vname,
           date,
           int.parse(balance),
           int.parse(amount),
@@ -141,39 +155,106 @@ class _AddMyBalanceState extends State<AddMyBalance> {
         title: Text('My Balance'),
       ),
       body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                FlatButton(
-                    onPressed: () => _selectDate(context),
-                    padding: EdgeInsets.only(top: 20.0),
-                    child: formattedDate != null
-                        ? Text(formattedDate.toString())
-                        : Text('Select date \n')),
-                TextFormField(
-                  controller: controllerAmount,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(labelText: 'Amount'),
-                  validator: (val) => val.length == 0 ? 'Enter Amount' : null,
-                  onSaved: (val) => amount = val,
-                ),
-                TextFormField(
-                  controller: controllerBalance,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(labelText: 'Balance'),
-                  validator: (val) => val.length == 0 ? 'Enter Balance' : null,
-                  onSaved: (val) => balance = val,
-                ),
-                RaisedButton(
-                  onPressed: validate,
-                  child: Text(isUpdating ? 'Update' : 'Save'),
-                ),
-              ],
+        child: Card(
+          elevation: 5.0,
+          child: Form(
+            key: formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  FutureBuilder<List<Vendor>>(
+                      future: DbHelper.getVendor(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<List<Vendor>> snapshot) {
+                        if (!snapshot.hasData) return CircularProgressIndicator();
+                        return DropdownButton<Vendor>(
+                          items: snapshot.data
+                              .map((user) => DropdownMenuItem<Vendor>(
+                            child: Text(user.name),
+                            value: user,
+                          ))
+                              .toList(),
+                          onChanged: (Vendor value) {
+                            setState(() {
+                              _currentUser = value;
+                              vname = _currentUser.name;
+                            });
+                          },
+                          isExpanded: true,
+                          //value: _currentUser,
+                          hint: vname != null
+                              ? Text(vname)
+                              : Text("Select Vendor"),
+                        );
+                      }),
+                  Container(
+                    padding: EdgeInsets.only(top: 10.0),
+                    width: 300,
+                    child: OutlineButton(
+                        color: Colors.blueAccent,
+                        onPressed: () => _selectDate(context),
+                        child: formattedDate != null
+                            ? Text(
+                          formattedDate.toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 40.0),
+                        )
+                            : Text(
+                          'Select date',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 40.0),
+                        )),
+                  ),
+                  TextFormField(
+                    controller: controllerAmount,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(labelText: 'Amount'),
+                    validator: (val) => val.length == 0 ? 'Enter Amount' : null,
+                    onSaved: (val) => amount = val,
+                  ),
+                  TextFormField(
+                    controller: controllerBalance,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(labelText: 'Balance'),
+                    validator: (val) => val.length == 0 ? 'Enter Balance' : null,
+                    onSaved: (val) => balance = val,
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(top :20.0),
+                    child: FlatButton(
+                      onPressed: validate,
+                      child: Container(
+                        height: 45,
+                        width: MediaQuery.of(context).size.width/1.2,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF0e81d1),
+                                Color(0xFF1f96f2)
+                              ],
+                            ),
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(50)
+                            )
+                        ),
+
+                        child: Center(
+                          child: Text(isUpdating ? 'Update' : 'Save'.toUpperCase(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

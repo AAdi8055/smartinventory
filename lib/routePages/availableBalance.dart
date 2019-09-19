@@ -15,6 +15,7 @@ class AvailableBalanceState extends State<AvailableBalance> {
   var _currentUser;
 
   String id;
+  String name;
   String date;
   String amount;
   String balance;
@@ -65,10 +66,10 @@ class AvailableBalanceState extends State<AvailableBalance> {
                     child: Container(
                         child: ListTile(
                           contentPadding: EdgeInsets.all(10.0),
-                          title: Text('Date: '+myBalance.date+'\nAmount : '+myBalance.amount.toString()+'\nBalance : '+myBalance.balance.toString()),
+                          title: Text('Vendor Name: '+myBalance.vname+'\nDate: '+myBalance.date+'\nAmount : '+myBalance.amount.toString()+'\nBalance : '+myBalance.balance.toString()),
                           leading: CircleAvatar(
                             backgroundColor: Colors.grey,
-                            child: Text(myBalance.date[0],
+                            child: Text(myBalance.vname[0],
                                 style: TextStyle(
                                   fontSize: 20.0,
                                   color: Colors.black,
@@ -77,6 +78,7 @@ class AvailableBalanceState extends State<AvailableBalance> {
                           onTap: () {
                             setState(() {
                               _currentUser = myBalance.id;
+                              name=myBalance.vname;
                               date = myBalance.date;
                               amount = myBalance.amount.toString();
                               balance = myBalance.balance.toString();
@@ -310,6 +312,7 @@ class AvailableBalanceState extends State<AvailableBalance> {
                                       builder: (BuildContext context) =>
                                           new AddMyBalance(
                                               id: _currentUser.toString(),
+                                              vname: name,
                                               date: date,
                                               amount: amount,
                                               balance: balance,

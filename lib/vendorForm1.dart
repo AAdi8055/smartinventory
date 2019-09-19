@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:smartinventory/customerList.dart';
 import 'package:smartinventory/database/databaseFile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smartinventory/routePages/availableBalance.dart';
+import 'package:smartinventory/vendorList.dart';
 
-class CustomerForm extends StatefulWidget {
+class VendorForm extends StatefulWidget {
   final String id, name, email, address, contact;
 
-  CustomerForm(
+  VendorForm(
       {Key key, this.id, this.name, this.email, this.address, this.contact})
       : super(key: key);
 
-  CustomerFormState createState() => new CustomerFormState(
+  VendorFormState createState() => new VendorFormState(
       id: this.id,
       name: this.name,
       email: this.email,
@@ -19,13 +19,13 @@ class CustomerForm extends StatefulWidget {
       contact: this.contact);
 }
 
-class CustomerFormState extends State<CustomerForm> {
+class VendorFormState extends State<VendorForm> {
   String id, name, email, address, contact;
 
-  CustomerFormState(
+  VendorFormState(
       {this.id, this.name, this.email, this.address, this.contact});
 
-  Future<List<Customer>> customer;
+  Future<List<Vendor>> vendor;
   var _currentUser;
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerAddress = TextEditingController();
@@ -64,7 +64,7 @@ class CustomerFormState extends State<CustomerForm> {
 
   refreshList() {
     setState(() {
-      customer = DbHelper.getCustomer();
+      vendor = DbHelper.getVendor();
     });
   }
 
@@ -86,14 +86,14 @@ class CustomerFormState extends State<CustomerForm> {
 /*      DbHelper.dropTable(employee);*/
       formKey.currentState.save();
       if (isUpdating && id != null) {
-        Customer e = Customer(
+        Vendor e = Vendor(
           _currentUser,
           name,
           address,
           contact,
           email,
         );
-        DbHelper.updateCustomer(e);
+        DbHelper.updateVendor(e);
         showToast("Updated Successfully");
         setState(() {
           isUpdating = false;
@@ -101,8 +101,8 @@ class CustomerFormState extends State<CustomerForm> {
         clearName();
         newPage();
       } else {
-        Customer e = Customer(null, name, address, contact, email);
-        DbHelper.saveCustomer(e);
+        Vendor e = Vendor(null, name, address, contact, email);
+        DbHelper.saveVendor(e);
         showToast("Save Successfully");
         clearName();
       }
@@ -110,17 +110,17 @@ class CustomerFormState extends State<CustomerForm> {
       refreshList();
     }
   }
-void newPage()  {
-  Navigator.of(context).pop();
-  Navigator.of(context).push(new MaterialPageRoute(
-  builder: (BuildContext context) => new CustomerList()));
-}
+  void newPage()  {
+    Navigator.of(context).pop();
+    Navigator.of(context).push(new MaterialPageRoute(
+        builder: (BuildContext context) => new VendorList()));
+  }
 
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('Customer Details'),
+        title: Text('Vendor Details'),
       ),
       body: SingleChildScrollView(
         child: Card(
@@ -135,7 +135,7 @@ void newPage()  {
                     autofocus: true,
                     controller: controllerName,
                     keyboardType: TextInputType.text,
-                    decoration: InputDecoration(labelText: 'Customer Name'),
+                    decoration: InputDecoration(labelText: 'Vendor Name'),
                     validator: (val) => val.length == 0 ? 'Enter Name' : null,
                     onSaved: (val) => name = val,
                   ),
