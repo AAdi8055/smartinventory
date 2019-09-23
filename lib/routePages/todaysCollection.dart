@@ -22,6 +22,7 @@ class TodayCollectionState extends State<TodayCollection> {
   String todayDate;
   TextEditingController controllerAmount = TextEditingController();
   String id;
+  int cid;
   String name;
   int amount;
   String date;
@@ -72,7 +73,8 @@ else
         null,
         name,
         amount,
-        date,
+        todayDate,
+        cid,
       );
       print(e);
       DbHelper.saveCollection(e);
@@ -134,6 +136,7 @@ else
                         setState(() {
                           _currentUser = value;
                           name = _currentUser.name;
+                          cid= _currentUser.id;
                         });
                       },
                       isExpanded: true,

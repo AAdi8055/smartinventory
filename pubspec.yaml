@@ -62,6 +62,14 @@ flutter:
     - asstes/aadi.JPG
     - asstes/bg.jpg
     - asstes/background.jpg
+    - asstes/icons8-truck-96.png
+    - asstes/icons8-customer-96.png
+    - asstes/icons8-feedback-128.png
+    - asstes/icons8-about-100.png
+    - asstes/icons8-product-100.png
+    - asstes/icons8-service-96.png
+    - asstes/icons8-post-96.png
+    - asstes/icons8-buy-96.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

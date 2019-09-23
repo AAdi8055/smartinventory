@@ -36,7 +36,7 @@ class _AddMyBalanceState extends State<AddMyBalance> {
 
   DateTime selectedDate = DateTime.now();
   String formattedDate;
-
+  int vid;
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -85,7 +85,7 @@ class _AddMyBalanceState extends State<AddMyBalance> {
       formattedDate = date;
     } else {
       isUpdating = false;
-      vname="";
+      vname=null;
     }
   }
 
@@ -93,7 +93,7 @@ class _AddMyBalanceState extends State<AddMyBalance> {
     if(formattedDate == null ){
       showToast("Please enter Date");
     }
-    else if(vname==""){
+    else if(vname==null){
       showToast("Please enter Name");
     }
     else
@@ -106,6 +106,7 @@ class _AddMyBalanceState extends State<AddMyBalance> {
           date,
           int.parse(balance),
           int.parse(amount),
+          vid,
         );
         DbHelper.updateMybalance(e);
         showToast("Updated Successfully");
@@ -121,6 +122,7 @@ class _AddMyBalanceState extends State<AddMyBalance> {
           date,
           int.parse(balance),
           int.parse(amount),
+          vid
         );
         DbHelper.saveMybalance(e);
         showToast("Save Successfully");
@@ -181,6 +183,7 @@ class _AddMyBalanceState extends State<AddMyBalance> {
                             setState(() {
                               _currentUser = value;
                               vname = _currentUser.name;
+                              vid=_currentUser.id;
                             });
                           },
                           isExpanded: true,

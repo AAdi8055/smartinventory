@@ -8,10 +8,11 @@ import 'package:smartinventory/productList.dart';
 import 'package:smartinventory/routePages/accountBalance.dart';
 import 'package:smartinventory/routePages/availableBalance.dart';
 import 'package:smartinventory/routePages/balanceRequestList.dart';
+import 'package:smartinventory/routePages/history.dart';
 import 'package:smartinventory/routePages/todaysBalance.dart';
 import 'package:smartinventory/routePages/todaysCollection.dart';
 import 'package:smartinventory/routePages/totalOutstanding.dart';
-import 'package:smartinventory/singleCustomerWiseReport.dart';
+import 'package:smartinventory/dateWiseReport.dart';
 import 'package:smartinventory/vendorForm1.dart';
 import 'package:smartinventory/vendorList.dart';
 import './page.dart';
@@ -92,6 +93,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: new Scaffold(
@@ -155,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                     }),
                 new Divider(),
                 new ListTile(
-                    title: new Text('Today\'s COllection'),
+                    title: new  Text('Today\'s Collection'),
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).push(new MaterialPageRoute(
@@ -190,29 +192,35 @@ class _HomePageState extends State<HomePage> {
                               new AvailableBalance()));
                     }),
                 new Divider(),
-
-                    ExpansionTile(
-                      title: Text("Reports"),
-                      children: <Widget>[
-                        ListTile(
-                            title: new Text('All Customer wise Report'),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(new MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      new CustomerWiseReport()));
-                            }),
-                        ListTile(
-                            title: new Text('Customer wise Report'),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(new MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                  new SelectCustomer()));
-                            }),
-                      ],
-                    ),
-
+                ExpansionTile(
+                  title: Text("Reports"),
+                  children: <Widget>[
+                    ListTile(
+                        title: new Text('Customer wise Report'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  new CustomerWiseReport()));
+                        }),
+                    ListTile(
+                        title: new Text('Date wise Report'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  new DateWiseReport()));
+                        }),
+                    ListTile(
+                        title: new Text('History Report'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  new HistoryReport()));
+                        }),
+                  ],
+                ),
                 new Divider(),
                 new ListTile(
                     title: new Text('Logout'),
@@ -294,10 +302,6 @@ class _HomePageState extends State<HomePage> {
                   return <Widget>[];
                 },
                 body: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage("asstes/bg.png"),
-                          fit: BoxFit.cover)),
                   child: (Stack(children: <Widget>[
                     /*Positioned(
                       child: Container(
@@ -321,7 +325,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
                       padding:
-                          const EdgeInsets.fromLTRB(16.0, 100.0, 16.0, 16.0),
+                          const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                       crossAxisCount: 2,
                       children: categoryCard,
                     )),
@@ -333,21 +337,14 @@ class _HomePageState extends State<HomePage> {
 }
 
 List<CategoryCard> categoryCard = [
-  CategoryCard(
-      "https://img.icons8.com/color/48/000000/buy.png", "Today's Balance"),
-  CategoryCard("https://img.icons8.com/color/48/000000/message-squared.png",
-      "Today's Collection"),
-  CategoryCard("https://img.icons8.com/color/48/000000/service.png",
-      "Total OutStanding"),
-  CategoryCard("https://img.icons8.com/bubbles/50/000000/product.png",
-      "Account Balance"),
-  CategoryCard("https://img.icons8.com/bubbles/50/000000/about.png",
-      "Available Balance"),
-  CategoryCard("https://img.icons8.com/cute-clipart/64/000000/feedback.png",
-      "Balance Request"),
-  CategoryCard("https://img.icons8.com/color/48/000000/gender-neutral-user.png", "Customer"),
-  CategoryCard(
-      "https://img.icons8.com/color/48/000000/gender-neutral-user.png", "Vendor"),
+  CategoryCard("asstes/icons8-buy-96.png", "Today's Balance"),
+  CategoryCard("asstes/icons8-post-96.png", "Today's Collection"),
+  CategoryCard("asstes/icons8-service-96.png", "Total OutStanding"),
+  CategoryCard("asstes/icons8-product-100.png", "Account Balance"),
+  CategoryCard("asstes/icons8-about-100.png", "Available Balance"),
+  CategoryCard("asstes/icons8-feedback-128.png", "Balance Request"),
+  CategoryCard("asstes/icons8-customer-96.png", "Customer"),
+  CategoryCard("asstes/icons8-truck-96.png", "Vendor"),
 ];
 
 class CategoryCard extends StatelessWidget {
@@ -398,7 +395,7 @@ class CategoryCard extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Image(
-                    image: new NetworkImage(images),
+                    image: new AssetImage(images),
                     fit: BoxFit.cover,
                     height: 80,
                     width: 80,

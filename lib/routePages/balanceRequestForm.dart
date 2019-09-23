@@ -40,7 +40,7 @@ class BalanceRequestFormState extends State<BalanceRequestForm> {
   DateTime selectedDate = DateTime.now();
   String formattedDate;
 
-
+  int cid;
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -78,6 +78,7 @@ class BalanceRequestFormState extends State<BalanceRequestForm> {
     customerName = '';
     name='';
     date='';
+    cid= null;
   }
 
   @override
@@ -92,6 +93,8 @@ class BalanceRequestFormState extends State<BalanceRequestForm> {
         controllerBalance.text = balance;
         controllerPaidAmount.text=paidAmount;
         name = customerName;
+        formattedDate=date;
+        cid=_currentUser;
       });
 
     } else {
@@ -108,13 +111,14 @@ class BalanceRequestFormState extends State<BalanceRequestForm> {
       if (isUpdating && id != null) {
         BalanceRequest e = BalanceRequest(
           _currentUser,
-          date,
           name,
+          date,
           int.parse(balance),
           int.parse(amount),
           int.parse(paidAmount),
+          cid,
         );
-        DbHelper.updateMybalance(e);
+        DbHelper.updateBalanceReq(e);
         showToast("Updated Successfully");
         setState(() {
           isUpdating = false;
@@ -129,6 +133,7 @@ class BalanceRequestFormState extends State<BalanceRequestForm> {
           int.parse(balance),
           int.parse(amount),
           int.parse(paidAmount),
+          cid,
         );
         DbHelper.saveBalanceRequest(e);
         showToast("Save Successfully");
@@ -189,6 +194,7 @@ class BalanceRequestFormState extends State<BalanceRequestForm> {
                             setState(() {
                               _currentUser = value;
                                name = _currentUser.name;
+                               cid  = _currentUser.id;
                             });
                           },
                           isExpanded: true,

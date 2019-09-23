@@ -27,7 +27,7 @@ class _TodayCollectionListState extends State<TodayCollectionList> {
         future: DbHelper.getTodaysCollection(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator());
+            return Center(child: Text('No record Added'));
 
           return ListView(
             children: snapshot.data

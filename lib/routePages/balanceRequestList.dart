@@ -20,6 +20,7 @@ class BalanceRequestListState extends State<BalanceRequestList> {
   String amount;
   String balance;
   String paidAmount;
+  String date;
 
   clearName() {
     _currentUser = null;
@@ -53,7 +54,7 @@ class BalanceRequestListState extends State<BalanceRequestList> {
         future: DbHelper.getBalanceRequest(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator());
+            return Center(child:Text('No record Added'));
 
           return ListView(
             padding: EdgeInsets.only(top: 10),
@@ -90,6 +91,8 @@ class BalanceRequestListState extends State<BalanceRequestList> {
                         paidAmount= balanceRequest.paidAmount.toString();
                         amount = balanceRequest.amount.toString();
                         balance = balanceRequest.balance.toString();
+                        date=balanceRequest.date;
+
                         Popup();
                       },
                     )),
@@ -330,7 +333,7 @@ class BalanceRequestListState extends State<BalanceRequestList> {
                           child: Text('Yes'),
                           onPressed: () {
                             setState(() {
-                              Navigator.pop(context);
+                              Navigator.pop(context);Navigator.pop(context);
                               Navigator.push(
                                   context,
                                   new MaterialPageRoute(
@@ -341,6 +344,7 @@ class BalanceRequestListState extends State<BalanceRequestList> {
                                         amount: amount,
                                         balance: balance,
                                         paidAmount: paidAmount,
+                                        date: date,
                                       )));
                             });
                           }),

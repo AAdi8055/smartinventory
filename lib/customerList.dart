@@ -42,7 +42,7 @@ class CustomerListState extends State<CustomerList> {
         future: DbHelper.getCustomerData(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator());
+            return Center(child: Text('No record Added'));
 
           return ListView(
             children: snapshot.data
@@ -125,7 +125,7 @@ class CustomerListState extends State<CustomerList> {
         builder: (BuildContext context) {
           return AlertDialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                borderRadius: BorderRadius.all(Radius.circular(12.0))),
             contentPadding: EdgeInsets.only(top: 0.0),
             content: Container(
               width: 300.0,
@@ -140,8 +140,8 @@ class CustomerListState extends State<CustomerList> {
                       decoration: BoxDecoration(
                         color: Colors.blueAccent,
                         borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(32.0),
-                            topRight: Radius.circular(32.0)),
+                            topLeft: Radius.circular(12.0),
+                            topRight: Radius.circular(12.0)),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

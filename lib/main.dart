@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smartinventory/registerform.dart';
 import 'package:smartinventory/routePages/accountBalance.dart';
 import 'package:smartinventory/routePages/availableBalance.dart';
 import 'package:smartinventory/routePages/balanceRequestForm.dart';
@@ -57,22 +58,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
   void _onLoading() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      child: Center(
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        child: Center(
           child: new Container(
             width: 40,
             height: 40,
             child:
-              new CircularProgressIndicator(),
+            new CircularProgressIndicator(),
           ),
-      ),
-    );
-    new Future.delayed(new Duration(seconds: 3), () {
-      Navigator.pop(context); //pop dialog
-      validateAndSubmit();
-    });
+        ),
+      );
+      new Future.delayed(new Duration(seconds: 3), () async {
+        Navigator.pop(context); //pop dialog
+        showToast('Login Successfully');
+        Navigator.of(context).pop();
+        Navigator.of(context).push(new MaterialPageRoute(
+            builder: (BuildContext context) => new HomePage()));
+      });
   }
   bool validateAndSave() {
     final form = formKey.currentState;
@@ -89,16 +93,20 @@ class _MyHomePageState extends State<MyHomePage> {
       String userId = "";
       try {
         if (_formType == FormType.login) {
+
           FirebaseUser user = (await FirebaseAuth.instance
               .signInWithEmailAndPassword(email: _email, password: _password)) .user ;
           print('Sign in ${user.uid}');
-          showToast('Login Successfully');
           formKey.currentState.reset();
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('email', _email);
+          _onLoading();
+
+
+          /*
           Navigator.of(context).pop();
           Navigator.of(context).push(new MaterialPageRoute(
-              builder: (BuildContext context) => new HomePage()));
+              builder: (BuildContext context) => new HomePage()));*/
 
         } else {
           FirebaseUser user = (await FirebaseAuth.instance
@@ -142,7 +150,15 @@ class _MyHomePageState extends State<MyHomePage> {
     ) ??
         false;
   }
-
+  String validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Enter Valid Email';
+    else
+      return null;
+  }
   Widget roundedButton(String buttonLabel, Color bgColor, Color textColor) {
     var loginBtn = new Container(
       padding: EdgeInsets.all(5.0),
@@ -351,183 +367,214 @@ class _MyHomePageState extends State<MyHomePage> {
         ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
        );*/
+
   @override
   Widget build(BuildContext context) {
+    var padding = MediaQuery.of(context).padding;
+double height =MediaQuery.of(context).size.height/2.5;
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
         body: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height/2.5,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xFF0e81d1),
-                          Color(0xFF1f96f2)
-                        ],
-                      ),
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(90)
-                      )
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Spacer(),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Icon(Icons.person,
-                          size: 90,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Spacer(),
-
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: 32,
-                              right: 32
-                          ),
-                          child: Text('Login',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                Form(
-                  key: formKey,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height/2,
+          child: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Container(
                     width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.only(top: 62),
+                    height: height - padding.top,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color(0xFF0e81d1),
+                            Color(0xFF1f96f2)
+                          ],
+                        ),
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(90)
+                        )
+                    ),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width/1.2,
-                          height: 60,
-                          padding: EdgeInsets.only(
-                              top: 7,left: 16, right: 16, bottom: 4
-                          ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(50)
-                              ),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 5
-                                )
-                              ]
-                          ),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              icon: Icon(Icons.email,
-                                color: Colors.grey,
-                              ),
-                              hintText: 'Email',
-                            ),
-                            validator: (val) => val.isEmpty ? 'please enter email' : null,
-                            onSaved: (val) => _email = val,
-                            autofocus: true,
-                          ),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width/1.2,
-                          height: 60,
-                          margin: EdgeInsets.only(top: 32),
-                          padding: EdgeInsets.only(
-                              top: 7,left: 16, right: 16, bottom: 4
-                          ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(50)
-                              ),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 5
-                                )
-                              ]
-                          ),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              icon: Icon(Icons.vpn_key,
-                                color: Colors.grey,
-                              ),
-                              hintText: 'Password',
-                            ),
-                            obscureText: true,
-                            validator: (val) => val.isEmpty ? 'please enter password' : null,
-                            onSaved: (val) => _password = val,
-                            controller: controller,
-                          ),
-                        ),
-
+                        Spacer(),
                         Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 16, right: 32
-                            ),
-                            child: Text('Forgot Password ?',
-                              style: TextStyle(
-                                  color: Colors.grey
-                              ),
-                            ),
+                          alignment: Alignment.center,
+                          child: Icon(Icons.person,
+                            size: 90,
+                            color: Colors.white,
                           ),
                         ),
                         Spacer(),
 
-                        FlatButton(
-                          onPressed: _onLoading,
-                          child: Container(
-                            height: 45,
-                            width: MediaQuery.of(context).size.width/1.2,
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xFF0e81d1),
-                                    Color(0xFF1f96f2)
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(50)
-                                )
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: 32,
+                                right: 32
                             ),
-
-                            child: Center(
-                                child: Text('Login'.toUpperCase(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold
-                                  ),
-                                ),
+                            child: Text('Login',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                )
-              ],
+
+                  Form(
+                    key: formKey,
+                    child: Container(
+
+                      height: MediaQuery.of(context).size.height/2,
+
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.only(top: 62),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width/1.2,
+                            height: 60,
+                            padding: EdgeInsets.only(
+                                top: 7,left: 16, right: 16, bottom: 4
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(50)
+                                ),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 5
+                                  )
+                                ]
+                            ),
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                icon: Icon(Icons.email,
+                                  color: Colors.grey,
+                                ),
+                                hintText: 'Email',
+                              ),
+                              validator: validateEmail,
+                              onSaved: (val) => _email = val,
+                              autofocus: true,
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width/1.2,
+                            height: 60,
+                            margin: EdgeInsets.only(top: 32),
+                            padding: EdgeInsets.only(
+                                top: 7,left: 16, right: 16, bottom: 4
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(50)
+                                ),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 5
+                                  )
+                                ]
+                            ),
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                icon: Icon(Icons.vpn_key,
+                                  color: Colors.grey,
+                                ),
+                                hintText: 'Password',
+                              ),
+                              obscureText: true,
+                              validator: (val) => val.isEmpty ? 'please enter password' : null,
+                              onSaved: (val) => _password = val,
+                              controller: controller,
+                            ),
+                          ),
+
+
+                          Spacer(),
+
+                          FlatButton(
+                            onPressed: validateAndSubmit,
+                            child: Container(
+                              height: 45,
+                              width: MediaQuery.of(context).size.width/1.2,
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFF0e81d1),
+                                      Color(0xFF1f96f2)
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(50)
+                                  )
+                              ),
+
+                              child: Center(
+                                  child: Text('Login'.toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                              ),
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(top:15.0),
+                            child: FlatButton(
+                              onPressed: (){
+                                Navigator.of(context).pop();
+                                Navigator.of(context).push(new MaterialPageRoute(
+                                    builder: (BuildContext context) => new RegistrationForm()));
+                              },
+                              child: Container(
+                                height: 45,
+                                width: MediaQuery.of(context).size.width/1.2,
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color(0xFF0e81d1),
+                                        Color(0xFF1f96f2)
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(50)
+                                    )
+                                ),
+
+                                child: Center(
+                                  child: Text('Register'.toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

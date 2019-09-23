@@ -1,38 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:smartinventory/database/databaseFile.dart';
+class DateWiseReport extends StatefulWidget {
+  final String date;
 
-class CustomerWiseReport extends StatefulWidget {
-  final String name;
-
-  CustomerWiseReport({Key key, this.name}) : super(key: key);
+  DateWiseReport({ Key key,this.date}): super(key: key);
 
   @override
-  _CustomerWiseReportState createState() =>
-      _CustomerWiseReportState(name: this.name);
+  _DateWiseReportState createState() => _DateWiseReportState(date: this.date);
 }
 
-class _CustomerWiseReportState extends State<CustomerWiseReport> {
-   String name;
-
-  _CustomerWiseReportState({Key key, this.name});
-
+class _DateWiseReportState extends State<DateWiseReport> {
   var DbHelper;
-  Future<List<BalanceRequest>> balanceRequest;
-  Future<List<TodaysCollection>> todaysColletion;
-  Future<List<CustomerReport>> customerReport;
+  String date;
 
+  _DateWiseReportState({this.date});
+
+  Future<List<CustomerReport>> customerReport;
   @override
   void initState() {
     super.initState();
     DbHelper = dbHelper();
     refreshList();
-    if(name==null){
-      name=null;
+    if(date==null){
+      date=null;
     }
     else{
-      name=name;
+      date=date;
     }
   }
 
@@ -46,7 +40,7 @@ class _CustomerWiseReportState extends State<CustomerWiseReport> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Customer Wise Details'),
+        title: Text('Date Wise Details'),
       ),
       body: _buildChild(),
       floatingActionButton: FloatingActionButton(
@@ -56,13 +50,51 @@ class _CustomerWiseReportState extends State<CustomerWiseReport> {
         },
         child: Icon(Icons.add),
       ),
+
     );
   }
-
-  Widget _buildChild() {
-    if (name == null) {
+  Widget _buildChild(){
+    if(date==null){
+     return FutureBuilder<List<CustomerReport>>(
+       future: DbHelper.customerWiseReport(),
+       builder: (context, snapshot) {
+         if (!snapshot.hasData)
+           return Center(child: Text('No record Added'));
+         return ListView(
+           children: snapshot.data
+               .map((customerReport) => Card(
+             elevation: 5,
+             child: Slidable(
+               actionPane: SlidableBehindActionPane(),
+               actionExtentRatio: 0.25,
+               child: Container(
+                   child: ListTile(
+                     title: Text(customerReport.customerName),
+                     subtitle: Text(customerReport.date +
+                         "\n" +
+                         customerReport.amount.toString()),
+                     leading: CircleAvatar(
+                       backgroundColor: Colors.red,
+                       child: Text(customerReport.customerName[0],
+                           style: TextStyle(
+                             fontSize: 18.0,
+                             color: Colors.white,
+                           )),
+                     ),
+                     onTap: () {},
+                   )),
+               actions: <Widget>[],
+               secondaryActions: <Widget>[],
+             ),
+           ))
+               .toList(),
+         );
+       },
+     );
+    }
+    else{
       return FutureBuilder<List<CustomerReport>>(
-        future: DbHelper.customerWiseReport(),
+        future: DbHelper.dateWiseReport(date),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return Center(child: Text('No record Added'));
@@ -76,9 +108,7 @@ class _CustomerWiseReportState extends State<CustomerWiseReport> {
                 child: Container(
                     child: ListTile(
                       title: Text(customerReport.customerName),
-                      subtitle: Text(customerReport.date +
-                          "\n" +
-                          customerReport.amount.toString()),
+                      subtitle: Text(customerReport.date+"\n" +customerReport.amount.toString()),
                       leading: CircleAvatar(
                         backgroundColor: Colors.red,
                         child: Text(customerReport.customerName[0],
@@ -87,44 +117,8 @@ class _CustomerWiseReportState extends State<CustomerWiseReport> {
                               color: Colors.white,
                             )),
                       ),
-                      onTap: () {},
-                    )),
-                actions: <Widget>[],
-                secondaryActions: <Widget>[],
-              ),
-            ))
-                .toList(),
-          );
-        },
-      );
-    } else {
-      return FutureBuilder<List<CustomerReport>>(
-        future: DbHelper.customerSingleWiseReport(name),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return Center(child: Text('No record Added'));
-          return ListView(
-            children: snapshot.data
-                .map((customerReport) => Card(
-              elevation: 5,
-              child: Slidable(
-                actionPane: SlidableBehindActionPane(),
-                actionExtentRatio: 0.25,
-                child: Container(
-                    child: ListTile(
-                      title: Text(customerReport.customerName),
-                      subtitle: Text(customerReport.date +
-                          "\n" +
-                          customerReport.amount.toString()),
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.red,
-                        child: Text(customerReport.customerName[0],
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.white,
-                            )),
-                      ),
-                      onTap: () {},
+                      onTap: () {
+                      },
                     )),
                 actions: <Widget>[],
                 secondaryActions: <Widget>[],
@@ -136,17 +130,11 @@ class _CustomerWiseReportState extends State<CustomerWiseReport> {
       );
     }
   }
-
-  NameFilter() {
-
-  }
-
   Popup() {
     var DbHelper;
-    var name;
+    var date;
     var _currentUser;
     DbHelper = dbHelper();
-    Future<List<Customer>> customer;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -175,9 +163,9 @@ class _CustomerWiseReportState extends State<CustomerWiseReport> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            "SELECT CUSTOMER",
+                            "SELECT DATE",
                             style:
-                                TextStyle(fontSize: 24.0, color: Colors.white),
+                            TextStyle(fontSize: 24.0, color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -194,23 +182,23 @@ class _CustomerWiseReportState extends State<CustomerWiseReport> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                    child: FutureBuilder<List<Customer>>(
-                        future: DbHelper.getCustomer(),
+                    child: FutureBuilder<List<CustomerReport>>(
+                        future: DbHelper.dateReport(),
                         builder: (BuildContext context,
-                            AsyncSnapshot<List<Customer>> snapshot) {
+                            AsyncSnapshot<List<CustomerReport>> snapshot) {
                           if (!snapshot.hasData)
                             return CircularProgressIndicator();
-                          return DropdownButton<Customer>(
+                          return DropdownButton<CustomerReport>(
                             items: snapshot.data
-                                .map((user) => DropdownMenuItem<Customer>(
-                                      child: Text(user.name),
-                                      value: user,
-                                    ))
+                                .map((user) => DropdownMenuItem<CustomerReport>(
+                              child: Text(user.date),
+                              value: user,
+                            ))
                                 .toList(),
-                            onChanged: (Customer value) {
+                            onChanged: (CustomerReport value) {
                               setState(() {
                                 _currentUser = value;
-                                name = _currentUser.name;
+                                date = _currentUser.date;
 
                                 Navigator.pop(context);
                                 Navigator.pop(context);
@@ -218,9 +206,9 @@ class _CustomerWiseReportState extends State<CustomerWiseReport> {
                                     context,
                                     new MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            new CustomerWiseReport(
-                                              name: name,
-                                            )));
+                                        new DateWiseReport(
+                                          date: date,
+                                        )));
                               });
                             },
                             isExpanded: true,

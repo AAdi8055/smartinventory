@@ -94,6 +94,8 @@ class CustomerFormState extends State<CustomerForm> {
           email,
         );
         DbHelper.updateCustomer(e);
+        DbHelper.balanceCustomerupdate(e);
+        DbHelper.collectionCustomerupdate(e);
         showToast("Updated Successfully");
         setState(() {
           isUpdating = false;
@@ -110,6 +112,24 @@ class CustomerFormState extends State<CustomerForm> {
       refreshList();
     }
   }
+  String validateMobile(String value) {
+// Indian Mobile number are of 10 digit only
+    if (value.length != 10)
+      return 'Mobile Number must be of 10 digit';
+    else
+      return null;
+  }
+
+  String validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Enter Valid Email';
+    else
+      return null;
+  }
+
 void newPage()  {
   Navigator.of(context).pop();
   Navigator.of(context).push(new MaterialPageRoute(
@@ -151,14 +171,14 @@ void newPage()  {
                     controller: controllerContact,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(labelText: 'Contact'),
-                    validator: (val) => val.length == 0 ? 'Enter Name' : null,
+                    validator: validateMobile,
                     onSaved: (val) => contact = val,
                   ),
                   TextFormField(
                     controller: controllerEmail,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(labelText: 'Email'),
-                    validator: (val) => val.length == 0 ? 'Enter Name' : null,
+                    validator: validateEmail,
                     onSaved: (val) => email = val,
                   ),
                   Row(
@@ -203,6 +223,7 @@ void newPage()  {
                               isUpdating = false;
                             });
                             clearName();
+                            newPage();
                           },
                           child: Container(
                             height: 45,

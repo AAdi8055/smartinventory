@@ -47,78 +47,64 @@ class TotalOutstandingState extends State<TotalOutstanding> {
       appBar: AppBar(
         title: Text('Total Outstanding'),
       ),
-      body: Card(
-        elevation: 5.0,
-        child: Center(
+      body: Center(
+
+        child: Card(
+          elevation: 5.0,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top :20.0),
+                padding: const EdgeInsets.only(top: 20.0),
                 child: FlatButton(
                   onPressed: null,
                   child: Container(
                     height: 45,
-                    width: MediaQuery.of(context).size.width/1.2,
+                    width: MediaQuery.of(context).size.width / 1.5,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            Color(0xFF0e81d1),
-                            Color(0xFF1f96f2)
-                          ],
+                          colors: [Color(0xFF
+                          ), Color(0xFF)],
                         ),
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(50)
-                        )
-                    ),
-
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
                     child: Center(
-                      child: Text('Total Outstanding'.toUpperCase(),
+                      child: Text(
+                        'Total Outstanding'.toUpperCase(),
                         style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold
-                        ),
+                            color: Colors.black, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
                 ),
               ),
-
               Padding(
-                padding: const EdgeInsets.only(top :20.0),
+                padding: const EdgeInsets.only(top: 20.0,bottom: 20.0),
                 child: FlatButton(
-                  onPressed:null,
+                  onPressed: null,
                   child: Container(
                     height: 45,
-                    width: MediaQuery.of(context).size.width/1.2,
+                    width: MediaQuery.of(context).size.width / 2.5,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            Color(0xFF0e81d1),
-                            Color(0xFF1f96f2)
-                          ],
+                          colors: [Color(0xFF), Color(0xFF)],
                         ),
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(50)
-                        )
-                    ),
-
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
                     child: Center(
                       child: _totalOutstanding != null
-                          ? Text(_totalOutstanding.toString(),style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-                      ),)
-                          : Text("Waiting....".toUpperCase(),style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-                      ),),
-
-                      ),
+                          ? Text(
+                              _totalOutstanding.toString(),
+                              style: TextStyle(
+                                  color: Colors.black, fontWeight: FontWeight.bold),
+                            )
+                          : Text(
+                              "0".toUpperCase(),
+                              style: TextStyle(
+                                  color: Colors.black, fontWeight: FontWeight.bold),
+                            ),
                     ),
                   ),
                 ),
-
-
+              ),
             ],
           ),
         ),

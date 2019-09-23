@@ -89,7 +89,7 @@ class TodaysBalanceState extends State<TodaysBalance> {
         future: DbHelper.getMyBalance(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator());
+            return Center(child: Text('No record Added'));
 
           return ListView(
             padding: EdgeInsets.only(top: 10),

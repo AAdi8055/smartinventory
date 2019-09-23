@@ -52,7 +52,7 @@ class AvailableBalanceState extends State<AvailableBalance> {
         future: DbHelper.getMyBalance(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator());
+            return Center(child: Text('No record Added'));
 
           return ListView(
             padding: EdgeInsets.only(top: 10),
@@ -305,6 +305,7 @@ class AvailableBalanceState extends State<AvailableBalance> {
                           child: Text('Yes'),
                           onPressed: () {
                             setState(() {
+                              Navigator.pop(context);
                               Navigator.pop(context);
                               Navigator.push(
                                   context,
